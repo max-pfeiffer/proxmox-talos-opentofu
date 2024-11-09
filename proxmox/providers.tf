@@ -1,5 +1,9 @@
 terraform {
         required_providers {
+               local = {
+                        source = "opentofu/local"
+                        version = "2.5.1"
+                }
                 proxmox = {
                         source = "telmate/proxmox"
                         version = "3.0.1-rc4"
