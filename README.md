@@ -40,6 +40,8 @@ tofu apply
 ```
 
 ## Information Sources
+* [Talos Linux documentation](https://www.talos.dev/v1.8/)
+* [Talos Linux Image Factory](https://factory.talos.dev/)
 * Terraform providers/modules
   * [terraform-provider-proxmox](https://github.com/Telmate/terraform-provider-proxmox)
   * [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)

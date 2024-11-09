@@ -31,10 +31,12 @@ variable "node_data" {
   type = object({
     controlplanes = map(object({
       install_disk = string
+      install_image = string
       hostname     = optional(string)
     }))
     workers = map(object({
       install_disk = string
+      install_image = string
       hostname     = optional(string)
     }))
   })
@@ -42,14 +44,17 @@ variable "node_data" {
     controlplanes = {
       "192.168.1.150" = {
         install_disk = "/dev/vda"
+        install_image = "factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.8.2"
       },
     }
     workers = {
       "192.168.1.151" = {
         install_disk = "/dev/vda"
+        install_image = "factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.8.2"
       },
       "192.168.1.152" = {
         install_disk = "/dev/vda"
+        install_image = "factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.8.2"
       }
     }
   }
