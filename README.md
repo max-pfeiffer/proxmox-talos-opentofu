@@ -1,1 +1,1 @@
-# proxmos-talos-linux-opentofu
+# proxmox-talos-opentofu
