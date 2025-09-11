@@ -1,0 +1,33 @@
+machine:
+  install:
+    disk: ${install_disk}
+    image: ${install_image}
+  network:
+    hostname: ${hostname}
+    interfaces:
+      - deviceSelector:
+          physical: true
+        addresses:
+          - ${ip_address}
+        routes:
+          - network: ${network}
+            gateway: ${network_gateway}
+        vip:
+          ip: ${vip_shared_ip}
+  registries:
+    mirrors:
+      docker.io:
+        endpoints:
+          - https://harbor.lan/v2/docker-hub-cache
+        overridePath: true
+      ghcr.io:
+        endpoints:
+          - https://harbor.lan/v2/github-cache
+        overridePath: true
+    config:
+      harbor.lan:
+        tls:
+            ca: |
+                ${indent(16, container_registry_cache_ca)}
+cluster:
+  allowSchedulingOnControlPlanes: false
