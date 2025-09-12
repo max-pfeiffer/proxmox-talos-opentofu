@@ -1,0 +1,18 @@
+machine:
+  install:
+    disk: ${install_disk}
+    image: ${install_image}
+  network:
+    hostname: ${hostname}
+    interfaces:
+      - deviceSelector:
+          physical: true
+        addresses:
+          - ${ip_address}
+        routes:
+          - network: ${network}
+            gateway: ${network_gateway}
+        vip:
+          ip: ${vip_shared_ip}
+cluster:
+  allowSchedulingOnControlPlanes: false
