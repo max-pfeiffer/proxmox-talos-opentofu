@@ -26,7 +26,7 @@ resource "proxmox_vm_qemu" "kubernetes_control_plane" {
   disk {
     slot = "ide2"
     type = "cdrom"
-    iso  = "local:iso/${local.talos_linux_iso_image_filename}"
+    iso  = "local:iso/${var.talos_linux_iso_image_filename}"
   }
 
   disk {
@@ -38,6 +38,7 @@ resource "proxmox_vm_qemu" "kubernetes_control_plane" {
   }
 
   network {
+    id     = 0
     model  = "virtio"
     bridge = "vmbr0"
     tag    = var.vlan_tag
@@ -77,7 +78,7 @@ resource "proxmox_vm_qemu" "kubernetes_worker" {
   disk {
     slot = "ide2"
     type = "cdrom"
-    iso  = "local:iso/${local.talos_linux_iso_image_filename}"
+    iso  = "local:iso/${var.talos_linux_iso_image_filename}"
   }
 
   disk {
@@ -89,6 +90,7 @@ resource "proxmox_vm_qemu" "kubernetes_worker" {
   }
 
   network {
+    id     = 0
     model  = "virtio"
     bridge = "vmbr0"
     tag    = var.vlan_tag
