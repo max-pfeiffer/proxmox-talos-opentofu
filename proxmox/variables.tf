@@ -40,6 +40,7 @@ variable "talos_linux_iso_image_filename" {
 variable "cluster_name" {
   description = "A name to provide for the Talos cluster"
   type        = string
+  default = "talos"
 }
 
 variable "cluster_vip_shared_ip" {
@@ -81,16 +82,19 @@ variable "node_data" {
 variable "network" {
   description = "Network for all nodes"
   type        = string
+  default     = "192.168.10.0/24"
 }
 
 variable "network_gateway" {
   description = "Network gateway for all nodes"
   type        = string
+  default     = "192.168.10.1"
 }
 
 variable "domain_name_server" {
   description = "DNS for all nodes"
   type        = string
+  default     = "192.168.10.1"
 }
 
 variable "vlan_tag" {

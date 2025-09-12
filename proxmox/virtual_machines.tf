@@ -1,7 +1,7 @@
 resource "proxmox_vm_qemu" "kubernetes_control_plane" {
   depends_on  = [proxmox_storage_iso.talos_linux_iso_image]
   for_each    = var.node_data.controlplanes
-  name        = format("kubernetes-control-plane-%s", index(keys(var.node_data.controlplanes), each.key))
+  name        = format("%s-kubernetes-control-plane-%s", var.cluster_name, index(keys(var.node_data.controlplanes), each.key))
   description = "Kubernetes Control Plane"
   target_node = var.proxmox_target_node
   agent       = 1
@@ -33,7 +33,7 @@ resource "proxmox_vm_qemu" "kubernetes_control_plane" {
     slot    = "virtio0"
     type    = "disk"
     storage = var.proxmox_storage_device
-    size    = "10240M"
+    size    = "50G"
     discard = true
   }
 
@@ -53,7 +53,7 @@ resource "proxmox_vm_qemu" "kubernetes_control_plane" {
 resource "proxmox_vm_qemu" "kubernetes_worker" {
   depends_on  = [proxmox_storage_iso.talos_linux_iso_image]
   for_each    = var.node_data.workers
-  name        = format("kubernetes-worker-%s", index(keys(var.node_data.workers), each.key))
+  name        = format("%s-kubernetes-worker-%s", var.cluster_name, index(keys(var.node_data.workers), each.key))
   description = "Kubernetes Worker Node"
   target_node = var.proxmox_target_node
   agent       = 1
@@ -85,7 +85,7 @@ resource "proxmox_vm_qemu" "kubernetes_worker" {
     slot    = "virtio0"
     type    = "disk"
     storage = var.proxmox_storage_device
-    size    = "10240M"
+    size    = "50G"
     discard = true
   }
 
