@@ -1,19 +1,21 @@
 resource "talos_machine_secrets" "this" {}
 
 data "talos_machine_configuration" "controlplane" {
-  cluster_name     = var.cluster_name
-  cluster_endpoint = "https://${var.cluster_vip_shared_ip}:6443"
-  machine_type     = "controlplane"
-  machine_secrets  = talos_machine_secrets.this.machine_secrets
-  talos_version    = var.talos_version
+  cluster_name       = var.cluster_name
+  cluster_endpoint   = "https://${var.cluster_vip_shared_ip}:6443"
+  machine_type       = "controlplane"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
+  talos_version      = var.talos_version
+  kubernetes_version = var.kubernetes_version
 }
 
 data "talos_machine_configuration" "worker" {
-  cluster_name     = var.cluster_name
-  cluster_endpoint = "https://${var.cluster_vip_shared_ip}:6443"
-  machine_type     = "worker"
-  machine_secrets  = talos_machine_secrets.this.machine_secrets
-  talos_version    = var.talos_version
+  cluster_name       = var.cluster_name
+  cluster_endpoint   = "https://${var.cluster_vip_shared_ip}:6443"
+  machine_type       = "worker"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
+  talos_version      = var.talos_version
+  kubernetes_version = var.kubernetes_version
 }
 
 data "talos_client_configuration" "this" {
@@ -37,6 +39,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       network         = var.network
       network_gateway = var.network_gateway
       vip_shared_ip   = var.cluster_vip_shared_ip
+      cilium_manifest = data.helm_template.cilium.manifest
     }),
   ]
 }

@@ -25,6 +25,11 @@ variable "talos_version" {
   default = "1.11.1"
 }
 
+variable "kubernetes_version" {
+  type    = string
+  default = "1.34.0"
+}
+
 variable "talos_linux_iso_image_url" {
   description = "URL of the Talos ISO image for initially booting the VM"
   type        = string
@@ -40,7 +45,7 @@ variable "talos_linux_iso_image_filename" {
 variable "cluster_name" {
   description = "A name to provide for the Talos cluster"
   type        = string
-  default = "talos"
+  default     = "talos"
 }
 
 variable "cluster_vip_shared_ip" {
