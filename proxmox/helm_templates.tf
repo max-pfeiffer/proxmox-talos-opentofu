@@ -38,16 +38,38 @@ data "helm_template" "cilium" {
       name  = "k8sServicePort"
       value = "7445"
     },
+    # Loadbalancer
+    # See: https://docs.cilium.io/en/stable/network/l2-announcements/
     {
-      name  = "gatewayAPI.enabled"
+      name  = "l2announcements.enabled"
       value = "true"
     },
     {
-      name  = "gatewayAPI.enableAlpn"
+      name  = "k8sClientRateLimit.qps"
+      value = "50"
+    },
+    {
+      name  = "k8sClientRateLimit.burst"
+      value = "100"
+    },
+    # Ingress Controller
+    # See: https://docs.cilium.io/en/stable/network/servicemesh/ingress/
+    {
+      name  = "ingressController.enabled"
       value = "true"
     },
     {
-      name  = "gatewayAPI.enableAppProtocol"
+      name  = "ingressController.loadbalancerMode"
+      value = "dedicated"
+    },
+    # Egress Gateway
+    # See: https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/
+    {
+      name  = "egressGateway.enabled"
+      value = "true"
+    },
+    {
+      name  = "bpf.masquerade"
       value = "true"
     },
   ]
