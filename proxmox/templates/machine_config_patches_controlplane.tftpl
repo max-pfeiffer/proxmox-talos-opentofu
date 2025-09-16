@@ -16,3 +16,12 @@ machine:
           ip: ${vip_shared_ip}
 cluster:
   allowSchedulingOnControlPlanes: false
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+  inlineManifests:
+    - name: cilium
+      contents: |
+        ${indent(8, cilium_manifest)}
