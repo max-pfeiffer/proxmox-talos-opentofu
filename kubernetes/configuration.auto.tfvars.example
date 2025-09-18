@@ -1,0 +1,3 @@
+# Kubernetes
+kubernetes_config_path    = "~/.kube/config"
+Kubernetes_config_context = "admin@yourclustername"
