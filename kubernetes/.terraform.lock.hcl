@@ -1,27 +1,26 @@
 # This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
-provider "registry.opentofu.org/opentofu/helm" {
-  version     = "2.15.0"
-  constraints = "2.15.0"
+provider "registry.opentofu.org/hashicorp/helm" {
+  version     = "3.0.2"
+  constraints = "3.0.2"
   hashes = [
-    "h1:rKskirxYKhPyaQ4gEp+wA+dSAeYNfZxw1oc4bgh5vVg=",
-    "zh:21394ae3ec6f8ccda74688f8aeb979c03c9c52b60b5d0ada10521b5a75ae85af",
-    "zh:248ba25e309432dc7a2a6049da9178731ae3884be1761c4e349c844ce5159d82",
-    "zh:30dd6046b239f8b3788958475ad4db9b956c99ea71a0492fe6f2380d8d711ffc",
-    "zh:40691066592cdd396226ff0ecd4153dce91799375282c3c8a13fdf21d616c73b",
-    "zh:54b16f5ac335903f6bd6c7ba03c66b894940511a0d16c6ad92a16fe9ef80aaa8",
-    "zh:9af1702deec999a8ba5fa379de6eb515bf8b045bb02a7f24e3aa1a559f88ec12",
-    "zh:d057a371798b526b32d6985baaaf6e8126f14f23e1ebd65b44b970064c7790e5",
-    "zh:de6fa77b4763ccdcf8d5546d54609299e3b0a2cfe3446e62d5cfa7806e2aa003",
-    "zh:e2a21a57031a97abd3a61c09ffa84f4aae451329e876c2cd6597e02947ca1008",
-    "zh:f8d12702874a935e0e2397bdb050f4d4c0d83fb4c0a9c7dfd1b49257605149bd",
+    "h1:GMW0C0TkkYmURt4OZIlwcLdvREL08PDbsSn5sfH4/TU=",
+    "zh:100f75a700074568cfaee7884e4477c50b5468e086db5bb95d7d519581b65621",
+    "zh:578d09c7319d0dd0fee03a7fcb48bf68ac978c1fefaa0752cfcb9ecfb0a56a4e",
+    "zh:64e7cce303362b4bf132d1c61858ef0ada221af4a2ea0fdfd16ec43e562d459c",
+    "zh:7a64933e70733aeec44bf9b9b6ea3617fd075acb346b082197ded993cfa7d2be",
+    "zh:7caf4655a5bf72e6d212209ad5ea5c619269eca6e0d9930c85b59bbbdf57ce28",
+    "zh:a1e0208423445e2443516e52a4d72c556b1303705c90aaeb139fbb64a10d7c1c",
+    "zh:ac9e4417e9e0486bc60f6796da06356b59161c9923c56a7a5c9b4900a46ee52d",
+    "zh:b9588da386c17456b242bd18122836baeccdce3227aac4752e189ec9ad218da7",
+    "zh:d5b6ac3b0b6beb3d94886f45a5a96eb6d78ca2b657efd62b8e0650d8097ee60f",
+    "zh:db6761e7cf86825f13628e8f4e32818683efff61b0d909211e1096cc6ad84f83",
   ]
 }
 
 provider "registry.opentofu.org/opentofu/kubernetes" {
-  version     = "2.32.0"
-  constraints = "2.32.0"
+  version = "2.32.0"
   hashes = [
     "h1:eQbVYFjsq9QjAeYvmRAXy7EOjvY8MO7XFV1vCsDD6ds=",
     "zh:06d586c8fcd3ab8fe7f3ac99142ba48b9efbff8bebe05c52b3c7997f83146200",
