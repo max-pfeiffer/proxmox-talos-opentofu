@@ -20,11 +20,11 @@ tofu plan
 tofu apply
 ```
 
-You can then grab the kube config file for Kubernetes provisioning like so:
+You can then grab and move the kube config file for Kubernetes provisioning like so:
 ```shell
-tofu output kubeconfig
+tofu output kubeconfig -raw > ~/.kube/config
+chmod 600 ~/.kube/config
 ```
-and put its contents into your `~/.kube/config`.
 
 Test if your cluster access works by listing the nodes:
 ```shell
