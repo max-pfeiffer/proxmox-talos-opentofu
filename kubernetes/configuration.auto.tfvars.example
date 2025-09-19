@@ -1,3 +1,10 @@
 # Kubernetes
 kubernetes_config_path    = "~/.kube/config"
 Kubernetes_config_context = "admin@yourclustername"
+
+# Cilium Load Balancer
+cilium_load_balancer_ip_range_start = "192.168.10.95"
+cilium_load_balancer_ip_range_stop = "192.168.10.99"
+
+# ArgoCD
+argocd_domain = "argocd.local"

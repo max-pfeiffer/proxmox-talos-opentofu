@@ -1,6 +1,9 @@
 # proxmox-talos-opentofu
-Proof of concept project using [OpenTofu](https://opentofu.org/) to install a Kubernetes cluster on a Proxmox VE
-hypervisor using [Talos Linux](https://www.talos.dev/).
+A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) running on a
+[Proxmox VE hypervisor](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
+Provisioning is done with [OpenTofu](https://opentofu.org/).
+
+The Kubernetes cluster uses [Cilium](https://cilium.io/) as Container Network Interface (CNI).
 
 ## Requirements
 You need to have installed on your local machine:
@@ -8,9 +11,12 @@ You need to have installed on your local machine:
 * [kubectl](https://kubernetes.io/docs/reference/kubectl/) (for testing and cluster interaction)
 
 ## Provisioning
-The project is grouped in two modules:
+The project is grouped in two sections:
 * proxmox: provisioning of virtual machines, operating systems and Kubernetes cluster
 * kubernetes: provisioning of Kubernetes cluster resources
+
+You will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in the cluster eventually. You can then
+install your applications using the GitOps approach. 
 
 ### Proxmox VE
 So you want first to provision the Proxmox part: create a `configuration.auto.tfvars` file based on the example and
@@ -54,10 +60,15 @@ tofu init
 tofu plan
 tofu apply
 ```
+The [ArgoCD](https://argoproj.github.io/cd/) instance should be available under the `argocd_domain` you configured
+in your `configuration.auto.tfvars` file i.e., http://argocd.local.
 
 ## Information Sources
 * [Talos Linux documentation](https://www.talos.dev/v1.8/)
 * [Talos Linux Image Factory](https://factory.talos.dev/)
-* Terraform providers/modules
+* Terraform providers:
   * [terraform-provider-proxmox](https://github.com/Telmate/terraform-provider-proxmox)
   * [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)
+  * [terraform-provider-helm](https://github.com/hashicorp/terraform-provider-helm)
+* Helm charts:
+  * [ArgoCD](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
