@@ -3,7 +3,7 @@ data "helm_template" "cilium" {
   namespace    = "kube-system"
   repository   = "https://helm.cilium.io"
   chart        = "cilium"
-  version      = "1.18.1"
+  version      = "1.18.3"
   kube_version = var.kubernetes_version
   set = [
     {
@@ -61,6 +61,20 @@ data "helm_template" "cilium" {
     {
       name  = "ingressController.loadbalancerMode"
       value = "dedicated"
+    },
+    # Gateway API
+    # See: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
+    {
+      name  = "gatewayAPI.enabled"
+      value = "true"
+    },
+    {
+      name  = "gatewayAPI.enableAlpn"
+      value = "true"
+    },
+    {
+      name  = "ggatewayAPI.enableAppProtocol"
+      value = "true"
     },
     # Egress Gateway
     # See: https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/

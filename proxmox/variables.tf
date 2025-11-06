@@ -22,24 +22,24 @@ variable "proxmox_storage_device" {
 
 variable "talos_version" {
   type    = string
-  default = "1.11.1"
+  default = "1.11.4"
 }
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.34.0"
+  default = "1.34.1"
 }
 
 variable "talos_linux_iso_image_url" {
   description = "URL of the Talos ISO image for initially booting the VM"
   type        = string
-  default     = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/v1.11.1/nocloud-amd64.iso"
+  default     = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/v1.11.4/nocloud-amd64.iso"
 }
 
 variable "talos_linux_iso_image_filename" {
   description = "Filename of the Talos ISO image for initially booting the VM"
   type        = string
-  default     = "talos-linux-v1.11.1-qemu-guest-agent-amd64.iso"
+  default     = "talos-linux-v1.11.4-qemu-guest-agent-amd64.iso"
 }
 
 variable "cluster_name" {
@@ -72,13 +72,13 @@ variable "node_data" {
     controlplanes = {
       "192.168.1.101" = {
         install_disk  = "/dev/vda"
-        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.1"
+        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.4"
       },
     }
     workers = {
       "192.168.1.102" = {
         install_disk  = "/dev/vda"
-        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.1"
+        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.4"
       },
     }
   }
