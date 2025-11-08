@@ -3,7 +3,15 @@ A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) ru
 [Proxmox VE hypervisor](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
-The Kubernetes cluster uses [Cilium](https://cilium.io/) as Container Network Interface (CNI).
+Kubernetes cluster features:
+* no kube-proxy
+* [Cilium](https://cilium.io/) as Container Network Interface (CNI)
+  * without kube-proxy
+  * with [L2 loadbalancer support](https://docs.cilium.io/en/stable/network/l2-announcements/)
+  * with [Ingress controller support](https://docs.cilium.io/en/stable/network/servicemesh/ingress/)
+  * with [Gateway API support](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/)
+  * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
+* [Gateway API](https://gateway-api.sigs.k8s.io/) CRDs are installed 
 
 ## Requirements
 You need to have installed on your local machine:
@@ -66,9 +74,12 @@ in your `configuration.auto.tfvars` file i.e., http://argocd.local.
 ## Information Sources
 * [Talos Linux documentation](https://www.talos.dev/v1.8/)
 * [Talos Linux Image Factory](https://factory.talos.dev/)
+* [Cilium documentation](https://docs.cilium.io/en/stable/)
+* [Gateway API](https://gateway-api.sigs.k8s.io/)
 * Terraform providers:
   * [terraform-provider-proxmox](https://github.com/Telmate/terraform-provider-proxmox)
   * [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)
   * [terraform-provider-helm](https://github.com/hashicorp/terraform-provider-helm)
 * Helm charts:
   * [ArgoCD](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
+  * [Cilium](https://artifacthub.io/packages/helm/cilium/cilium)
