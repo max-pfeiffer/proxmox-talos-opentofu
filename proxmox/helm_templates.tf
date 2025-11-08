@@ -73,8 +73,13 @@ data "helm_template" "cilium" {
       value = "true"
     },
     {
-      name  = "ggatewayAPI.enableAppProtocol"
+      name  = "gatewayAPI.enableAppProtocol"
       value = "true"
+    },
+    {
+      name  = "gatewayAPI.gatewayClass.create"
+      value = "true"
+      type = "string"
     },
     # Egress Gateway
     # See: https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/

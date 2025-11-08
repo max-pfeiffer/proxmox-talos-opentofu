@@ -39,6 +39,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       network         = var.network
       network_gateway = var.network_gateway
       vip_shared_ip   = var.cluster_vip_shared_ip
+      gateway_api_manifest = file("${path.module}/gateway-api/gateway-api-crds-v1.3.yaml")
       cilium_manifest = data.helm_template.cilium.manifest
     }),
   ]

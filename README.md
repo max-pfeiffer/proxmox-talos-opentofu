@@ -72,3 +72,4 @@ in your `configuration.auto.tfvars` file i.e., http://argocd.local.
   * [terraform-provider-helm](https://github.com/hashicorp/terraform-provider-helm)
 * Helm charts:
   * [ArgoCD](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
+  * [Cilium](https://artifacthub.io/packages/helm/cilium/cilium)

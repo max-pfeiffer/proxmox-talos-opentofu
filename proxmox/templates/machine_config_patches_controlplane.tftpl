@@ -22,6 +22,9 @@ cluster:
   proxy:
     disabled: true
   inlineManifests:
+    - name: gateway-api
+      contents: |
+        ${indent(8, gateway_api_manifest)}
     - name: cilium
       contents: |
         ${indent(8, cilium_manifest)}
