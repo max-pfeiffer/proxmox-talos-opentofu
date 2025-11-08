@@ -38,7 +38,7 @@ data "helm_template" "cilium" {
       name  = "k8sServicePort"
       value = "7445"
     },
-    # Loadbalancer
+    # L2 Loadbalancer
     # See: https://docs.cilium.io/en/stable/network/l2-announcements/
     {
       name  = "l2announcements.enabled"
