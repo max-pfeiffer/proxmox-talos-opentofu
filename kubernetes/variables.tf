@@ -9,14 +9,14 @@ variable "Kubernetes_config_context" {
 }
 
 variable "cilium_load_balancer_ip_range_start" {
-  type      = string
+  type = string
 }
 
 variable "cilium_load_balancer_ip_range_stop" {
-  type      = string
+  type = string
 }
 
 variable "argocd_domain" {
-  type      = string
+  type = string
 }
 

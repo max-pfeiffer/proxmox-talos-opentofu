@@ -4,14 +4,15 @@ A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) ru
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
 Kubernetes cluster features:
+* Kubernetes v1.34.1
 * no kube-proxy
-* [Cilium](https://cilium.io/) as Container Network Interface (CNI)
+* [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
   * without kube-proxy
   * with [L2 loadbalancer support](https://docs.cilium.io/en/stable/network/l2-announcements/)
   * with [Ingress controller support](https://docs.cilium.io/en/stable/network/servicemesh/ingress/)
   * with [Gateway API support](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/)
   * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
-* [Gateway API](https://gateway-api.sigs.k8s.io/) CRDs are installed 
+* [Gateway API v1.3.0](https://gateway-api.sigs.k8s.io/) CRDs are installed 
 
 ## Requirements
 You need to have installed on your local machine:
