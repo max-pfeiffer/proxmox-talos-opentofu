@@ -14,6 +14,8 @@ Kubernetes cluster features:
   * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
 * [Gateway API v1.3.0](https://gateway-api.sigs.k8s.io/) CRDs are installed 
 
+This Kubernetes cluster is meant to be used in a test or home lab environment.
+
 ## Requirements
 You need to have installed on your local machine:
 * [OpenTofu](https://opentofu.org/)
@@ -23,6 +25,9 @@ You need to have installed on your local machine:
 The project is grouped in two sections:
 * proxmox: provisioning of virtual machines, operating systems and Kubernetes cluster
 * kubernetes: provisioning of Kubernetes cluster resources
+
+This way you can choose to only provision the cluster itself or/and provision Kubernetes resources and bootstrap
+also [ArgoCD](https://argoproj.github.io/cd/).
 
 You will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in the cluster eventually. You can then
 install your applications using the GitOps approach. 
@@ -71,6 +76,15 @@ tofu apply
 ```
 The [ArgoCD](https://argoproj.github.io/cd/) instance should be available under the `argocd_domain` you configured
 in your `configuration.auto.tfvars` file i.e., http://argocd.local.
+
+## Roadmap
+My todo list for the GitOps part:
+* bootstrap a certificate authority
+* add storage options i. e. NFS, Ceph, local
+* add Keycloak operator and Keycloak instance for SSO
+* add Prometheus/Grafana for monitoring
+* add Alloy/Loki for logging
+* add Velero for disaster recovery
 
 ## Information Sources
 * [Talos Linux documentation](https://www.talos.dev/v1.8/)
