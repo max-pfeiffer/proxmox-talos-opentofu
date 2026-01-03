@@ -1,9 +1,14 @@
 machine:
+  features:
+    hostDNS:
+      forwardKubeDNSToHost: false
   install:
     disk: ${install_disk}
     image: ${install_image}
   network:
     hostname: ${hostname}
+    nameservers:
+      - ${dns}
     interfaces:
       - deviceSelector:
           physical: true
