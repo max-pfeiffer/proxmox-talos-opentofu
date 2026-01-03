@@ -4,7 +4,7 @@ A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) ru
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
 Kubernetes cluster features:
-* Kubernetes v1.34.1
+* Kubernetes v1.34.2
 * no kube-proxy
 * [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
   * without kube-proxy

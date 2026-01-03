@@ -8,6 +8,7 @@ resource "proxmox_vm_qemu" "kubernetes_control_plane" {
   vm_state    = "running"
   memory      = 8192
   boot        = "order=virtio0;ide2"
+  nameserver  = var.domain_name_server
 
   cpu {
     cores = 2
@@ -60,6 +61,7 @@ resource "proxmox_vm_qemu" "kubernetes_worker" {
   vm_state    = "running"
   memory      = 16384
   boot        = "order=virtio0;ide2"
+  nameserver  = var.domain_name_server
 
   cpu {
     cores = 2
