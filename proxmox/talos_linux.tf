@@ -35,6 +35,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       hostname             = each.value.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), each.key)) : each.value.hostname
       install_disk         = each.value.install_disk
       install_image        = each.value.install_image
+      dns                  = var.domain_name_server
       ip_address           = "${each.key}/24"
       network              = var.network
       network_gateway      = var.network_gateway
@@ -56,6 +57,7 @@ resource "talos_machine_configuration_apply" "worker" {
       hostname        = each.value.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), each.key)) : each.value.hostname
       install_disk    = each.value.install_disk
       install_image   = each.value.install_image
+      dns             = var.domain_name_server
       ip_address      = "${each.key}/24"
       network         = var.network
       network_gateway = var.network_gateway
