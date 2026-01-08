@@ -43,24 +43,22 @@ variable "install_argocd_app_of_apps" {
 variable "argocd_app_of_apps_source" {
   type    = string
   default = <<-EOT
-source:
-  repoURL: https://github.com/max-pfeiffer/proxmox-talos-opentofu
-  targetRevision: main
-  path: argocd/root
-  directory:
-    recurse: true
+repoURL: https://github.com/max-pfeiffer/proxmox-talos-opentofu
+targetRevision: feature/make-gitops-part-configurable
+path: argocd
+directory:
+  recurse: true
 EOT
 }
 
 variable "argocd_app_of_apps_sync_policy" {
   type    = string
   default = <<-EOT
-syncPolicy:
-  automated:
-    prune: true
-    selfHeal: true
-  syncOptions:
-  - SkipDryRunOnMissingResource=true
+automated:
+  prune: true
+  selfHeal: true
+syncOptions:
+- SkipDryRunOnMissingResource=true
 EOT
 }
 

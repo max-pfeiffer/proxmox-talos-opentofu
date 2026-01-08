@@ -1,5 +1,5 @@
 apiVersion: v2
-name: argocd-base-application
+name: app-of-apps
 description: Helm chart for installing the ArgoCD base application
 
 # A chart can be either an 'application' or a 'library' chart.

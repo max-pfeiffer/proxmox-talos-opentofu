@@ -1,12 +1,12 @@
 resource "helm_release" "argocd" {
-  name             = "argo-cd"
-  namespace        = "argocd"
-  create_namespace = true
-  chart            = "argo-cd"
-  version          = "9.2.4"
-  repository       = "https://argoproj.github.io/argo-helm"
-  timeout          = 120
-  set              = local.argocd_values
+  depends_on = [kubernetes_namespace_v1.argocd]
+  name       = "argo-cd"
+  chart      = "argo-cd"
+  version    = "9.2.4"
+  repository = "https://argoproj.github.io/argo-helm"
+  namespace  = kubernetes_namespace_v1.argocd.id
+  timeout    = 120
+  set        = local.argocd_values
 }
 
 resource "helm_release" "cilium_lb_config" {
@@ -30,8 +30,9 @@ resource "helm_release" "cilium_lb_config" {
 resource "helm_release" "argocd_app_of_apps" {
   count      = var.install_argocd_app_of_apps ? 1 : 0
   depends_on = [helm_release.argocd]
-  name       = "cilium-lb-config"
-  chart      = "${path.module}/helm_charts/cilium-lb-config"
+  name       = "app-of-apps"
+  chart      = "${path.module}/helm_charts/app-of-apps"
+  namespace  = kubernetes_namespace_v1.argocd.id
   timeout    = 60
   set = [
     {
@@ -44,3 +45,26 @@ resource "helm_release" "argocd_app_of_apps" {
     },
   ]
 }
+
+# data "helm_template" "argocd_app_of_apps" {
+#
+#   depends_on = [helm_release.argocd]
+#   name       = "app-of-apps"
+#   chart      = "${path.module}/helm_charts/app-of-apps"
+#   namespace  = kubernetes_namespace_v1.argocd.id
+#   timeout    = 60
+#   set = [
+#     {
+#       name  = "source"
+#       value = var.argocd_app_of_apps_source
+#     },
+#     {
+#       name  = "syncPolicy"
+#       value = var.argocd_app_of_apps_sync_policy
+#     },
+#   ]
+# }
+#
+# output "argocd_app_of_apps_rendered_yaml" {
+#   value = data.helm_template.argocd_app_of_apps.manifest
+# }
