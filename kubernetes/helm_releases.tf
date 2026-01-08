@@ -3,34 +3,14 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   chart            = "argo-cd"
-  version          = "9.1.0"
+  version          = "9.2.4"
   repository       = "https://argoproj.github.io/argo-helm"
   timeout          = 120
-  set = [
-    {
-      name  = "global.domain"
-      value = var.argocd_domain
-    },
-    {
-      name  = "configs.params.server\\.insecure"
-      value = "true"
-    },
-    {
-      name  = "server.ingress.enabled"
-      value = "true"
-    },
-    {
-      name  = "server.ingress.ingressClassName"
-      value = "cilium"
-    },
-    {
-      name  = "server.ingress.annotations.ingress\\.cilium\\.io/force-https"
-      value = "disabled"
-    },
-  ]
+  set              = local.argocd_values
 }
 
 resource "helm_release" "cilium_lb_config" {
+  count      = var.install_cilium_lb_config ? 1 : 0
   depends_on = [helm_release.argocd]
   name       = "cilium-lb-config"
   chart      = "${path.module}/helm_charts/cilium-lb-config"
@@ -43,6 +23,24 @@ resource "helm_release" "cilium_lb_config" {
     {
       name  = "ciliumLoadBalancerIpRange.stop"
       value = var.cilium_load_balancer_ip_range_stop
+    },
+  ]
+}
+
+resource "helm_release" "argocd_app_of_apps" {
+  count      = var.install_argocd_app_of_apps ? 1 : 0
+  depends_on = [helm_release.argocd]
+  name       = "cilium-lb-config"
+  chart      = "${path.module}/helm_charts/cilium-lb-config"
+  timeout    = 60
+  set = [
+    {
+      name  = "source"
+      value = var.argocd_app_of_apps_source
+    },
+    {
+      name  = "syncPolicy"
+      value = var.argocd_app_of_apps_sync_policy
     },
   ]
 }
