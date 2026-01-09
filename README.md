@@ -4,6 +4,7 @@ A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) ru
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
 Kubernetes cluster features:
+* Talos Linux v1.11.6
 * Kubernetes v1.34.2
 * no kube-proxy
 * [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
@@ -25,62 +26,107 @@ You need to have installed on your local machine:
 The project is grouped in two sections:
 * proxmox: provisioning of virtual machines, operating systems and Kubernetes cluster
 * kubernetes: provisioning of Kubernetes cluster resources
+* argocd: provisioning of Kubernetes resources using GitOps, can be installed with `install_argocd_app_of_apps` flag 
 
 This way you can choose to only provision the cluster itself or/and provision Kubernetes resources and bootstrap
 also [ArgoCD](https://argoproj.github.io/cd/).
 
 You will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in the cluster eventually. You can then
-install your applications using the GitOps approach. 
+install your applications using the GitOps approach. Have a look at `install_argocd_app_of_apps` and the related
+configuration variables for further options.
+
+The main idea is to configure the Kubernetes cluster and also the [ArgoCD](https://argoproj.github.io/cd/) bootstrap with infrastructure as code
+using [OpenTofu](https://opentofu.org/). So it can be rolled out very quickly and consistently. All other Kubernetes resources are then
+provisioned using a git repository via the GitOps approach.
+
+Usually you want to keep your cluster infrastructure and [ArgoCD](https://argoproj.github.io/cd/) bootstrap separate from your Kubernetes resources.
+That way you have everything decoupled and migrate to a new cluster infrastructure more easily. I added the `argocd`
+directory mainly for demonstration purposes.
 
 ### Proxmox VE
-So you want first to provision the Proxmox part: create a `configuration.auto.tfvars` file based on the example and
+First step is to provision the Proxmox part: create a `configuration.auto.tfvars` file based on the example and
 edit it so it suits your needs:
 ```shell
-cd proxmox
-cope configuration.auto.tfvars.example configuration.auto.tfvars
-vim configuration.auto.tfvars
+$ cd proxmox
+$ cope configuration.auto.tfvars.example configuration.auto.tfvars
+$ vim configuration.auto.tfvars
 ```
 Then apply the configuration using OpenTofu:
 ```shell
-tofu init
-tofu plan
-tofu apply
+$ tofu init
+$ tofu plan
+$ tofu apply
 ```
 You can then grab and move the kube config file for Kubernetes provisioning like so:
 ```shell
-tofu output kubeconfig -raw > ~/.kube/config
-chmod 600 ~/.kube/config
+$ tofu output kubeconfig -raw > ~/.kube/config
+$ chmod 600 ~/.kube/config
 ```
 Test if your cluster access works by listing the nodes:
 ```shell
-kubectl get nodes
+$ kubectl get nodes
+NAME            STATUS   ROLES           AGE   VERSION
+your-cp-0       Ready    control-plane   5d    v1.34.2
+your-worker-0   Ready    <none>          5d    v1.34.2
 ```
-You might need to wait a bit until the cluster comes up. Proceed with the next step when all nodes are in the `ready`
+You might need to wait a bit until the nodes come up. Proceed with the next step when all nodes are in the `Ready`
 state.
 
 ### Kubernetes
-Secondly, you can provision the Resources inside the Kubernetes cluster. Currently, this project just installs
-ArgoCD in the `argocd` namespace in the cluster. You can then add on top of this by adding your own resources 
-using the GitOps approach.
-You need to create a `configuration.auto.tfvars` file as well first:
+Secondly, you can provision the Resources inside the Kubernetes cluster. Here you have a couple of options to choose 
+from. All options can be configured using variables in `configuration.auto.tfvars`:
+1. **Quick start**: installs Cilium LB config, ArgoCD, Ingress without TLS (default settings) with OpenTofu. [ArgoCD](https://argoproj.github.io/cd/) is
+   available on http://argocd.local.
+   * install_cilium_lb_config = true
+   * argocd_domain = "argocd.local"
+   * argocd_server_insecure = true
+   * argocd_ingress_enabled = true
+   * install_argocd_app_of_apps = false
+   * install_argocd_app_of_apps_git_repo_secret = false
+2. **GitOps quick start**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources
+   in `argocd` directory (App of Apps) with OpenTofu: cert-manager, Gateway, HTTPRoute, External Secrets Operator etc.
+   [ArgoCD](https://argoproj.github.io/cd/) is available on https://yourpublicdomain.com:
+   * install_cilium_lb_config = false
+   * argocd_domain = "yourpublicdomain.com"
+   * argocd_server_insecure = true
+   * argocd_ingress_enabled = false
+   * install_argocd_app_of_apps = true
+   * install_argocd_app_of_apps_git_repo_secret = false
+3. **GitOps using your own repository**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources in
+   the repository you specify in `argocd_app_of_apps_source`. Credentials for a private repository can be configured
+   and installed with OpenTofu using `install_argocd_app_of_apps_git_repo_secret` and the related variables:
+   * install_cilium_lb_config = false
+   * argocd_domain = "yourpublicdomain.com"
+   * argocd_server_insecure = true
+   * argocd_ingress_enabled = false
+   * install_argocd_app_of_apps = true
+   * argocd_app_of_apps_source = YOUR SOURCE SETTINGS
+   * install_argocd_app_of_apps_git_repo_secret = true
+   * argocd_app_of_apps_git_repo_secret_url = "https://github.com/you/yourrepo.git"
+   * argocd_app_of_apps_git_repo_secret_password_or_token = "github_pat_OLImf09435459hfjoi9m435298524jtfjn45i8tmnmds329023jdhn"
+
+These are three use cases I envision here. Of course can combine the variables to any other setup which suits your needs. 
+
+Create a `configuration.auto.tfvars` like so and edit it to your liking:
 ```shell
-cd kubernetes
-cope configuration.auto.tfvars.example configuration.auto.tfvars
-vim configuration.auto.tfvars
+$ cd kubernetes
+$ cope configuration.auto.tfvars.example configuration.auto.tfvars
+$ vim configuration.auto.tfvars
 ```
 Then do the provisiong with OpenTofu:
 ```shell
-tofu init
-tofu plan
-tofu apply
+$ tofu init
+$ tofu plan
+$ tofu apply
 ```
-The [ArgoCD](https://argoproj.github.io/cd/) instance should be available under the `argocd_domain` you configured
-in your `configuration.auto.tfvars` file i.e., http://argocd.local.
+You can grab the [ArgoCD](https://argoproj.github.io/cd/) initial admin password with `kubectl` afterwards:
+```shell
+$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
+```
 
 ## Roadmap
 My todo list for the GitOps part:
-* bootstrap a certificate authority
-* add storage options i. e. NFS, Ceph, local
+* add storage options i.e. NFS, Ceph, local
 * add Keycloak operator and Keycloak instance for SSO
 * add Prometheus/Grafana for monitoring
 * add Alloy/Loki for logging
@@ -94,6 +140,7 @@ My todo list for the GitOps part:
 * Terraform providers:
   * [terraform-provider-proxmox](https://github.com/Telmate/terraform-provider-proxmox)
   * [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)
+  * [terraform-provider-kubernetes](https://github.com/hashicorp/terraform-provider-kubernetes) 
   * [terraform-provider-helm](https://github.com/hashicorp/terraform-provider-helm)
 * Helm charts:
   * [ArgoCD](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
