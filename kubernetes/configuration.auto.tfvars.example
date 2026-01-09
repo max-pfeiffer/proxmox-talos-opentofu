@@ -3,8 +3,32 @@ kubernetes_config_path    = "~/.kube/config"
 Kubernetes_config_context = "admin@yourclustername"
 
 # Cilium Load Balancer
+install_cilium_lb_config            = false
 cilium_load_balancer_ip_range_start = "192.168.10.95"
 cilium_load_balancer_ip_range_stop = "192.168.10.99"
 
 # ArgoCD
-argocd_domain = "argocd.local"
+argocd_domain          = "argocd.local"
+argocd_server_insecure = true
+argocd_ingress_enabled = true
+
+## App of Apps
+install_argocd_app_of_apps                 = false
+argocd_app_of_apps_source                  = <<-EOT
+repoURL: https://github.com/you/yourrepo.git
+targetRevision: main
+path: argocd
+directory:
+  recurse: true
+EOT
+argocd_app_of_apps_sync_policy             = <<-EOT
+automated:
+  prune: true
+  selfHeal: true
+syncOptions:
+- SkipDryRunOnMissingResource=true
+EOT
+install_argocd_app_of_apps_git_repo_secret = false
+argocd_app_of_apps_git_repo_secret_url     = "https://github.com/you/yourrepo.git"
+argocd_app_of_apps_git_repo_secret_password_or_token   = "github_pat_OLImf09435459hfjoi9m435298524jtfjn45i8tmnmds329023jdhn"
+

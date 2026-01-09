@@ -11,7 +11,7 @@ resource "kubernetes_secret_v1" "argocd_app_of_apps_git_repo" {
   data = {
     type     = "git"
     url      = var.argocd_app_of_apps_git_repo_secret_url
-    username = "git"
-    password = var.argocd_app_of_apps_git_repo_secret_token
+    username = var.argocd_app_of_apps_git_repo_secret_username
+    password = var.argocd_app_of_apps_git_repo_secret_password_or_token
   }
 }

@@ -11,7 +11,7 @@ locals {
         name  = "configs.params.server\\.insecure"
         value = "true"
       },
-      ] : [],
+    ] : [],
     var.argocd_ingress_enabled ? [
       {
         name  = "server.ingress.enabled"
