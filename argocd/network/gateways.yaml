@@ -1,0 +1,48 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: acme
+  namespace: network
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  gatewayClassName: cilium
+  addresses:
+  - type: IPAddress
+    # Configure your IP address here
+    value: 192.168.10.96
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: public
+  namespace: network
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  gatewayClassName: cilium
+  addresses:
+  - type: IPAddress
+    # Configure your IP address here
+    value: 192.168.10.97
+  listeners:
+  - name: argocd
+    protocol: HTTPS
+    port: 443
+    # Configure the FQDN for ArgoCD here
+    hostname: "argocd.yourdomain.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: argocd-tls
+    allowedRoutes:
+        namespaces:
+          from: All
