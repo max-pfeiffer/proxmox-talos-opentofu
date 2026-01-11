@@ -1,0 +1,11 @@
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1000"
+spec:
+  blocks:
+    # Configure your IP pool here
+    - start: "192.168.10.95"
+      stop: "192.168.10.99"

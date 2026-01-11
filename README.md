@@ -23,7 +23,7 @@ You need to have installed on your local machine:
 * [kubectl](https://kubernetes.io/docs/reference/kubectl/) (for testing and cluster interaction)
 
 ## Provisioning
-The project is grouped in two sections:
+The project is grouped in three sections:
 * proxmox: provisioning of virtual machines, operating systems and Kubernetes cluster
 * kubernetes: provisioning of Kubernetes cluster resources
 * argocd: provisioning of Kubernetes resources using GitOps, can be installed with `install_argocd_app_of_apps` flag 
@@ -73,7 +73,7 @@ You might need to wait a bit until the nodes come up. Proceed with the next step
 state.
 
 ### Kubernetes
-Secondly, you can provision the Resources inside the Kubernetes cluster. Here you have a couple of options to choose 
+Secondly, you can provision the resources inside the Kubernetes cluster. You have a couple of options to choose 
 from. All options can be configured using variables in `configuration.auto.tfvars`:
 1. **Quick start**: installs Cilium LB config, ArgoCD, Ingress without TLS (default settings) with OpenTofu. [ArgoCD](https://argoproj.github.io/cd/) is
    available on http://argocd.local.
@@ -83,16 +83,7 @@ from. All options can be configured using variables in `configuration.auto.tfvar
    * argocd_ingress_enabled = true
    * install_argocd_app_of_apps = false
    * install_argocd_app_of_apps_git_repo_secret = false
-2. **GitOps quick start**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources
-   in `argocd` directory (App of Apps) with OpenTofu: cert-manager, Gateway, HTTPRoute, External Secrets Operator etc.
-   [ArgoCD](https://argoproj.github.io/cd/) is available on https://yourpublicdomain.com:
-   * install_cilium_lb_config = false
-   * argocd_domain = "yourpublicdomain.com"
-   * argocd_server_insecure = true
-   * argocd_ingress_enabled = false
-   * install_argocd_app_of_apps = true
-   * install_argocd_app_of_apps_git_repo_secret = false
-3. **GitOps using your own repository**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources in
+2. **GitOps using your own repository**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources in
    the repository you specify in `argocd_app_of_apps_source`. Credentials for a private repository can be configured
    and installed with OpenTofu using `install_argocd_app_of_apps_git_repo_secret` and the related variables:
    * install_cilium_lb_config = false
@@ -105,7 +96,12 @@ from. All options can be configured using variables in `configuration.auto.tfvar
    * argocd_app_of_apps_git_repo_secret_url = "https://github.com/you/yourrepo.git"
    * argocd_app_of_apps_git_repo_secret_password_or_token = "github_pat_OLImf09435459hfjoi9m435298524jtfjn45i8tmnmds329023jdhn"
 
-These are three use cases I envision here. Of course can combine the variables to any other setup which suits your needs. 
+These are two use cases I envision here. Please regard them as examples. Of course, you can combine the variables to
+any other setup which suits your needs.
+
+For doing a **GitOps quick start** you can fork this repository and point the `argocd_app_of_apps_source` to the 
+`argocd` directory of your newly forked repository. This way you can make use of the example Kubernetes resources in
+`argocd` directory and edit them to match your infrastructure. 
 
 Create a `configuration.auto.tfvars` like so and edit it to your liking:
 ```shell
@@ -113,7 +109,7 @@ $ cd kubernetes
 $ cope configuration.auto.tfvars.example configuration.auto.tfvars
 $ vim configuration.auto.tfvars
 ```
-Then do the provisiong with OpenTofu:
+Then do the provisioning with OpenTofu:
 ```shell
 $ tofu init
 $ tofu plan
@@ -125,12 +121,18 @@ $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.p
 ```
 
 ## Roadmap
-My todo list for the GitOps part:
-* add storage options i.e. NFS, Ceph, local
+Proxmox part:
+* make node resources configurable (CPU, memory, etc.)
+* make version upgrades possible for Kubernetes Nodes with OpenTofu
+
+GitOps part:
+* add storage options i.e. Ceph, local
 * add Keycloak operator and Keycloak instance for SSO
 * add Prometheus/Grafana for monitoring
 * add Alloy/Loki for logging
 * add Velero for disaster recovery
+
+I am happy to receive pull requests for any improvements.
 
 ## Information Sources
 * [Talos Linux documentation](https://www.talos.dev/v1.8/)

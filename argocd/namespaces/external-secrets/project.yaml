@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: cert
+  name: external-secrets
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-900"
 spec:
-  description: Certs
+  description: External Secrets
   clusterResourceWhitelist:
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
@@ -16,12 +16,10 @@ spec:
       kind: ClusterRoleBinding
     - group: admissionregistration.k8s.io
       kind: ValidatingWebhookConfiguration
-    - group: admissionregistration.k8s.io
-      kind: MutatingWebhookConfiguration
+    - group: external-secrets.io
+      kind: ClusterSecretStore
   sourceRepos:
     - '*'
   destinations:
-    - namespace: cert
-      server: '*'
-    - namespace: kube-system
+    - namespace: external-secrets
       server: '*'

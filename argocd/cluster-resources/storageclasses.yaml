@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csi-nfs
+  annotations:
+    argocd.argoproj.io/sync-wave: "-700"
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: nfs.csi.k8s.io
+parameters:
+  # Configure you NFS server here
+  server: "your-nfs-server.com"
+  share: "/mnt/big-storage-pool/nfs"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+mountOptions:
+  - nfsvers=4.1
+---
