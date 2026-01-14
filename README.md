@@ -23,10 +23,10 @@ You need to have installed on your local machine:
 * [kubectl](https://kubernetes.io/docs/reference/kubectl/) (for testing and cluster interaction)
 
 ## Provisioning
-The project is grouped in three sections:
-* proxmox: provisioning of virtual machines, operating systems and Kubernetes cluster
-* kubernetes: provisioning of Kubernetes cluster resources
-* argocd: provisioning of Kubernetes resources using GitOps, can be installed with `install_argocd_app_of_apps` flag 
+The project is grouped into three sections:
+* proxmox: provisioning of virtual machines, operating system and Kubernetes cluster
+* kubernetes: provisioning of Kubernetes resources in the running Kubernetes cluster
+* argocd: provisioning of Kubernetes resources using GitOps approach, can be configured with `install_argocd_app_of_apps` flag 
 
 This way you can choose to only provision the cluster itself or/and provision Kubernetes resources and bootstrap
 also [ArgoCD](https://argoproj.github.io/cd/).
@@ -35,13 +35,13 @@ You will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in th
 install your applications using the GitOps approach. Have a look at `install_argocd_app_of_apps` and the related
 configuration variables for further options.
 
-The main idea is to configure the Kubernetes cluster and also the [ArgoCD](https://argoproj.github.io/cd/) bootstrap with infrastructure as code
+The main idea is to provision the Kubernetes cluster and bootstrap [ArgoCD](https://argoproj.github.io/cd/) with infrastructure as code
 using [OpenTofu](https://opentofu.org/). So it can be rolled out very quickly and consistently. All other Kubernetes resources are then
-provisioned using a git repository via the GitOps approach.
+installed with [ArgoCD](https://argoproj.github.io/cd/) using a git repository.
 
-Usually you want to keep your cluster infrastructure and [ArgoCD](https://argoproj.github.io/cd/) bootstrap separate from your Kubernetes resources.
-That way you have everything decoupled and migrate to a new cluster infrastructure more easily. I added the `argocd`
-directory mainly for demonstration purposes.
+Usually you want to keep your Kubernetes cluster infrastructure and the Kubernetes resources in a separate repositories.
+That way you have everything decoupled, and you can migrate your applications to a new cluster infrastructure more easily.
+I added the Kubernetes resources in the `argocd` directory mainly for demonstration purposes.
 
 ### Proxmox VE
 First step is to provision the Proxmox part: create a `configuration.auto.tfvars` file based on the example and
@@ -119,6 +119,8 @@ You can grab the [ArgoCD](https://argoproj.github.io/cd/) initial admin password
 ```shell
 $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
 ```
+ArgoCD web user interface should be up and running by now. You can access it in your web browser on
+http://argocd.local if you didn't change the defaults or under the domain you configured with `argocd_domain`.
 
 ## Roadmap
 Proxmox part:
