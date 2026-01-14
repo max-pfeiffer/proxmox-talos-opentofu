@@ -48,7 +48,7 @@ First step is to provision the Proxmox part: create a `configuration.auto.tfvars
 edit it so it suits your needs:
 ```shell
 $ cd proxmox
-$ cope configuration.auto.tfvars.example configuration.auto.tfvars
+$ cp configuration.auto.tfvars.example configuration.auto.tfvars
 $ vim configuration.auto.tfvars
 ```
 Then apply the configuration using OpenTofu:
@@ -106,7 +106,7 @@ For doing a **GitOps quick start** you can fork this repository and point the `a
 Create a `configuration.auto.tfvars` like so and edit it to your liking:
 ```shell
 $ cd kubernetes
-$ cope configuration.auto.tfvars.example configuration.auto.tfvars
+$ cp configuration.auto.tfvars.example configuration.auto.tfvars
 $ vim configuration.auto.tfvars
 ```
 Then do the provisioning with OpenTofu:
@@ -126,7 +126,7 @@ Proxmox part:
 * make version upgrades possible for Kubernetes Nodes with OpenTofu
 
 GitOps part:
-* add storage options i.e. Ceph, local
+* add more storage options i.e. Ceph, local
 * add Keycloak operator and Keycloak instance for SSO
 * add Prometheus/Grafana for monitoring
 * add Alloy/Loki for logging
