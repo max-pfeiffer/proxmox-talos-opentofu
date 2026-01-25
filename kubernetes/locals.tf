@@ -21,6 +21,7 @@ locals {
         name  = "server.ingress.ingressClassName"
         value = "cilium"
       },
-    ] : []
+    ] : [],
+    length(var.argocd_helm_values) > 0 ? var.argocd_helm_values : []
   )
 }
