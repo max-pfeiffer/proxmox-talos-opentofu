@@ -44,6 +44,15 @@ variable "argocd_ingress_enabled" {
   default     = true
 }
 
+variable "argocd_helm_values" {
+  description = "Additional Helm values for installing the ArgoCD Helm chart"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
+}
+
 # See: https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/#app-of-apps-pattern
 variable "install_argocd_app_of_apps" {
   description = "Flag for bootstrapping ArgoCD with an App of Apps"

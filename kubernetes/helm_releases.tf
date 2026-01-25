@@ -45,26 +45,3 @@ resource "helm_release" "argocd_app_of_apps" {
     },
   ]
 }
-
-# data "helm_template" "argocd_app_of_apps" {
-#
-#   depends_on = [helm_release.argocd]
-#   name       = "app-of-apps"
-#   chart      = "${path.module}/helm_charts/app-of-apps"
-#   namespace  = kubernetes_namespace_v1.argocd.id
-#   timeout    = 60
-#   set = [
-#     {
-#       name  = "source"
-#       value = var.argocd_app_of_apps_source
-#     },
-#     {
-#       name  = "syncPolicy"
-#       value = var.argocd_app_of_apps_sync_policy
-#     },
-#   ]
-# }
-#
-# output "argocd_app_of_apps_rendered_yaml" {
-#   value = data.helm_template.argocd_app_of_apps.manifest
-# }
