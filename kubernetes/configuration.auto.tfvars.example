@@ -8,9 +8,25 @@ cilium_load_balancer_ip_range_start = "192.168.10.95"
 cilium_load_balancer_ip_range_stop = "192.168.10.99"
 
 # ArgoCD
-argocd_domain          = "argocd.local"
-argocd_server_insecure = true
-argocd_ingress_enabled = true
+argocd_helm_values = [
+    {
+      name  = "global.domain"
+      value = "argocd.local"
+    },
+    {
+      # See: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-for-argocd-server
+      name  = "configs.params.server\\.insecure"
+      value = "true"
+    },
+    {
+      name  = "server.ingress.enabled"
+      value = "true"
+    },
+    {
+      name  = "server.ingress.ingressClassName"
+      value = "cilium"
+    },
+]
 
 ## App of Apps
 install_argocd_app_of_apps                 = false

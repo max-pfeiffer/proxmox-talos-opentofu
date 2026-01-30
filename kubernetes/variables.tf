@@ -26,31 +26,31 @@ variable "cilium_load_balancer_ip_range_stop" {
   type        = string
 }
 
-variable "argocd_domain" {
-  description = "The FQDN for ArgoCD application"
-  type        = string
-}
-
-# See: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-for-argocd-server
-variable "argocd_server_insecure" {
-  description = "Flag for disabling internal TLS with --insecure in ArgoCD Helm chart"
-  type        = bool
-  default     = true
-}
-
-variable "argocd_ingress_enabled" {
-  description = "Flag for enabling/disabling creating an Ingress in ArgoCD Helm chart"
-  type        = bool
-  default     = true
-}
-
 variable "argocd_helm_values" {
   description = "Additional Helm values for installing the ArgoCD Helm chart"
   type = list(object({
     name  = string
     value = string
   }))
-  default = []
+  default = [
+    {
+      name  = "global.domain"
+      value = "argocd.local"
+    },
+    {
+      # See: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-for-argocd-server
+      name  = "configs.params.server\\.insecure"
+      value = "true"
+    },
+    {
+      name  = "server.ingress.enabled"
+      value = "true"
+    },
+    {
+      name  = "server.ingress.ingressClassName"
+      value = "cilium"
+    },
+  ]
 }
 
 # See: https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/#app-of-apps-pattern

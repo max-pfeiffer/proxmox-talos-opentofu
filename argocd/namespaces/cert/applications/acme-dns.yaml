@@ -1,0 +1,102 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: acme-dns
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cert
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    namespace: cert
+    server: https://kubernetes.default.svc
+  source:
+    chart: acme-dns
+    repoURL: https://max-pfeiffer.github.io/acme-dns-server-helm-chart
+    targetRevision: 0.1.0
+    helm:
+      valuesObject:
+        services:
+          api:
+            type: ClusterIP
+            ports:
+              api: 80
+            metadata:
+              labels:
+                gateway: public
+          dns:
+            metadata:
+              labels:
+                gateway: public
+        config: |
+          [general]
+          # DNS interface. Note that systemd-resolved may reserve port 53 on 127.0.0.53
+          # In this case acme-dns will error out and you will need to define the listening interface
+          # for example: listen = "127.0.0.1:53"
+          listen = "0.0.0.0:53"
+          # protocol, "both", "both4", "both6", "udp", "udp4", "udp6" or "tcp", "tcp4", "tcp6"
+          protocol = "both"
+          # domain name to serve the requests off of
+          domain = "acme-dns.superquick.click"
+          # zone name server
+          nsname = "acme-dns.superquick.click"
+          # admin email address, where @ is substituted with .
+          nsadmin = "admin.superquick.click"
+          # predefined records served in addition to the TXT
+          records = [
+              # domain pointing to the public IP of your acme-dns server 
+              "acme-dns.superquick.click. A 85.3.109.133",
+              # specify that auth.example.org will resolve any *.auth.example.org records
+              "acme-dns.superquick.click. NS acme-dns.superquick.click.",
+          ]
+          # debug messages from CORS etc
+          debug = false
+        
+          [database]
+          # Database engine to use, sqlite3 or postgres
+          engine = "sqlite3"
+          # Connection string, filename for sqlite3 and postgres://$username:$password@$host/$db_name for postgres
+          # Please note that the default Docker image uses path /var/lib/acme-dns/acme-dns.db for sqlite3
+          connection = "/var/lib/acme-dns/acme-dns.db"
+          # connection = "postgres://user:password@localhost/acmedns_db"
+        
+          [api]
+          # listen ip eg. 127.0.0.1
+          ip = "0.0.0.0"
+          # disable registration endpoint
+          disable_registration = false
+          # listen port, eg. 443 for default HTTPS
+          port = "80"
+          # possible values: "letsencrypt", "letsencryptstaging", "cert", "none"
+          tls = "none"
+          # only used if tls = "cert"
+          tls_cert_privkey = "/etc/tls/example.org/privkey.pem"
+          tls_cert_fullchain = "/etc/tls/example.org/fullchain.pem"
+          # only used if tls = "letsencrypt"
+          acme_cache_dir = "api-certs"
+          # optional e-mail address to which Let's Encrypt will send expiration notices for the API's cert
+          notification_email = ""
+          # CORS AllowOrigins, wildcards can be used
+          corsorigins = [
+              "*"
+          ]
+          # use HTTP header to get the client ip
+          use_header = false
+          # header name to pull the ip address / list of ip addresses from
+          header_name = "X-Forwarded-For"
+        
+          [logconfig]
+          # logging level: "error", "warning", "info" or "debug"
+          loglevel = "debug"
+          # possible values: stdout, TODO file & integrations
+          logtype = "stdout"
+          # file path for logfile TODO
+          # logfile = "./acme-dns.log"
+          # format, either "json" or "text"
+          logformat = "text"

@@ -78,18 +78,14 @@ from. All options can be configured using variables in `configuration.auto.tfvar
 1. **Quick start**: installs Cilium LB config, ArgoCD, Ingress without TLS (default settings) with OpenTofu. [ArgoCD](https://argoproj.github.io/cd/) is
    available on http://argocd.local.
    * install_cilium_lb_config = true
-   * argocd_domain = "argocd.local"
-   * argocd_server_insecure = true
-   * argocd_ingress_enabled = true
+   * argocd_helm_values: [see defaults in variables.tf](kubernetes/variables.tf)
    * install_argocd_app_of_apps = false
    * install_argocd_app_of_apps_git_repo_secret = false
 2. **GitOps using your own repository**: installs ArgoCD, no Cilium LB config, no Ingress and the Kubernetes resources in
    the repository you specify in `argocd_app_of_apps_source`. Credentials for a private repository can be configured
    and installed with OpenTofu using `install_argocd_app_of_apps_git_repo_secret` and the related variables:
    * install_cilium_lb_config = false
-   * argocd_domain = "yourpublicdomain.com"
-   * argocd_server_insecure = true
-   * argocd_ingress_enabled = false
+   * argocd_helm_values: add your Helm values and override defaults, for instance keep server insecure and switch off ingress
    * install_argocd_app_of_apps = true
    * argocd_app_of_apps_source = YOUR SOURCE SETTINGS
    * install_argocd_app_of_apps_git_repo_secret = true
