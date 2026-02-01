@@ -118,6 +118,13 @@ $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.p
 ArgoCD web user interface should be up and running by now. You can access it in your web browser on
 http://argocd.local if you didn't change the defaults or under the domain you configured with `argocd_domain`.
 
+Or log in using ArgoCD CLI (if [installed](https://argo-cd.readthedocs.io/en/stable/cli_installation/))
+and check on sync status of your apps:
+```shell
+$ argocd login --port-forward --port-forward-namespace argocd --plaintext
+$ argocd app list --port-forward --port-forward-namespace argocd --plaintext
+```
+
 ## Roadmap
 Proxmox part:
 * make node resources configurable (CPU, memory, etc.)

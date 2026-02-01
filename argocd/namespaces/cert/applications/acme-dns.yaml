@@ -19,7 +19,7 @@ spec:
   source:
     chart: acme-dns
     repoURL: https://max-pfeiffer.github.io/acme-dns-server-helm-chart
-    targetRevision: 0.1.0
+    targetRevision: 0.1.1
     helm:
       valuesObject:
         services:
@@ -27,13 +27,10 @@ spec:
             type: ClusterIP
             ports:
               api: 80
-            metadata:
-              labels:
-                gateway: public
           dns:
             metadata:
-              labels:
-                gateway: public
+              annotations:
+                "lbipam.cilium.io/ips": "192.168.10.98"
         config: |
           [general]
           # DNS interface. Note that systemd-resolved may reserve port 53 on 127.0.0.53
