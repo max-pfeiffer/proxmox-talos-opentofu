@@ -2,7 +2,7 @@
 proxmox_api_url = "https://192.168.1.25:8006/api2/json"
 proxmox_api_token_id = "root@pam!supersecret"
 proxmox_api_token_secret = "js7ej5k9-hd75-hd64-js56-js834jmd732"
-proxmox_target_node = "your proxmox node"
+proxmox_target_node = "your-proxmox-node"
 proxmox_storage_device   = "samsung-ssd"
 
 # Talos Linux
