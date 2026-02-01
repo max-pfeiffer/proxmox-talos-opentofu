@@ -59,7 +59,7 @@ $ tofu apply
 ```
 You can then grab and move the kube config file for Kubernetes provisioning like so:
 ```shell
-$ tofu output kubeconfig -raw > ~/.kube/config
+$ tofu output -raw kubeconfig > ~/.kube/config
 $ chmod 600 ~/.kube/config
 ```
 Test if your cluster access works by listing the nodes:
