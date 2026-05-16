@@ -2,7 +2,7 @@ resource "helm_release" "argocd" {
   depends_on = [kubernetes_namespace_v1.argocd]
   name       = "argo-cd"
   chart      = "argo-cd"
-  version    = "9.2.4"
+  version    = "9.5.14"
   repository = "https://argoproj.github.io/argo-helm"
   namespace  = kubernetes_namespace_v1.argocd.id
   timeout    = 120
