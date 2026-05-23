@@ -53,6 +53,12 @@ variable "argocd_helm_values" {
   ]
 }
 
+variable "argocd_helm_yaml_values" {
+  description = "Additional raw YAML Helm values for installing the ArgoCD Helm chart, use for multiline values"
+  type        = list(string)
+  default     = []
+}
+
 # See: https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/#app-of-apps-pattern
 variable "install_argocd_app_of_apps" {
   description = "Flag for bootstrapping ArgoCD with an App of Apps"
