@@ -56,3 +56,41 @@ node_data = {
 network            = "192.168.10.0/24"
 network_gateway    = "192.168.10.1"
 domain_name_server = "192.168.10.1"
+vlan_tag           = 10 # Optional: if you don't specify it no Vlan tag is set for the virtual machines
+
+# Config patches
+talos_machine_config_patch_controlplane = <<-EOT
+machine:
+  registries:
+    mirrors:
+      docker.io:
+        endpoints:
+          - https://harbor.local/v2/docker-hub-cache
+        overridePath: true
+      ghcr.io:
+        endpoints:
+          - https://harbor.local/v2/github-cache
+        overridePath: true
+    config:
+      harbor.local:
+        tls:
+          ca: BASE64_ENCODED_ROOT_CA_CERTIFICATE
+EOT
+
+talos_machine_config_patch_worker = <<-EOT
+machine:
+  registries:
+    mirrors:
+      docker.io:
+        endpoints:
+          - https://harbor.local/v2/docker-hub-cache
+        overridePath: true
+      ghcr.io:
+        endpoints:
+          - https://harbor.local/v2/github-cache
+        overridePath: true
+    config:
+      harbor.local:
+        tls:
+          ca: BASE64_ENCODED_ROOT_CA_CERTIFICATE
+EOT

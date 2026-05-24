@@ -8,29 +8,39 @@ cilium_load_balancer_ip_range_start = "192.168.10.95"
 cilium_load_balancer_ip_range_stop = "192.168.10.99"
 
 # ArgoCD
-argocd_helm_values = [
-    {
-      name  = "global.domain"
-      value = "argocd.local"
-    },
-    {
-      # See: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-for-argocd-server
-      name  = "configs.params.server\\.insecure"
-      value = "true"
-    },
-    {
-      name  = "server.ingress.enabled"
-      value = "true"
-    },
-    {
-      name  = "server.ingress.ingressClassName"
-      value = "cilium"
-    },
+argocd_helm_values = []
+
+argocd_helm_yaml_values = [
+  <<-EOT
+    global:
+      domain: argocd.superquick.click
+    configs:
+      cm:
+        create: true
+        admin.enabled: "false"
+        oidc.config: |
+          name: Keycloak
+          issuer: https://keycloak.superquick.click/realms/homelab
+          clientID: argocd
+          clientSecret: $keycloak-client-argocd-secret:client-secret
+          requestedScopes: ["openid", "profile", "email", "groups"]
+      params:
+        create: true
+        server.insecure: "true"
+      rbac:
+        create: true
+        policy.default: "role:readonly"
+        policy.csv: |
+          g, argocd-admins, role:admin
+    server:
+      ingress:
+        enabled: false
+  EOT
+  ,
 ]
-argocd_helm_yaml_values = []
 
 ## App of Apps
-install_argocd_app_of_apps                 = false
+install_argocd_app_of_apps                 = true
 argocd_app_of_apps_source                  = <<-EOT
 repoURL: https://github.com/you/yourrepo.git
 targetRevision: main
@@ -45,7 +55,7 @@ automated:
 syncOptions:
 - SkipDryRunOnMissingResource=true
 EOT
-install_argocd_app_of_apps_git_repo_secret = false
+install_argocd_app_of_apps_git_repo_secret = true
 argocd_app_of_apps_git_repo_secret_url     = "https://github.com/you/yourrepo.git"
 argocd_app_of_apps_git_repo_secret_password_or_token   = "github_pat_OLImf09435459hfjoi9m435298524jtfjn45i8tmnmds329023jdhn"
 
