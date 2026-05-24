@@ -1,10 +1,10 @@
-# proxmox-talos-opentofu
+# Proxmox Talos OpenTofu - Turnkey Kubernetes Cluster
 A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) running on a
 [Proxmox VE hypervisor](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
 Kubernetes cluster features:
-* Talos Linux v1.11.6
+* [Talos Linux v1.11.6](https://www.talos.dev/) 
 * Kubernetes v1.34.2
 * no kube-proxy
 * [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
@@ -14,6 +14,7 @@ Kubernetes cluster features:
   * with [Gateway API support](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/)
   * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
 * [Gateway API v1.3.0](https://gateway-api.sigs.k8s.io/) CRDs are installed 
+* [ArgoCD v3.4.2](https://argoproj.github.io/cd/)
 
 This Kubernetes cluster is meant to be used in a test or home lab environment.
 
@@ -28,10 +29,10 @@ The project is grouped into three sections:
 * kubernetes: provisioning of Kubernetes resources in the running Kubernetes cluster
 * argocd: provisioning of Kubernetes resources using GitOps approach, can be configured with `install_argocd_app_of_apps` flag 
 
-This way you can choose to only provision the cluster itself or/and provision Kubernetes resources and bootstrap
-also [ArgoCD](https://argoproj.github.io/cd/).
+This way you can choose to only provision the cluster itself. As an additional option you can provision Kubernetes
+resources and bootstrap also [ArgoCD](https://argoproj.github.io/cd/).
 
-You will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in the cluster eventually. You can then
+Going through all the steps, you will have an [ArgoCD](https://argoproj.github.io/cd/) instance running in the cluster eventually. You can then
 install your applications using the GitOps approach. Have a look at `install_argocd_app_of_apps` and the related
 configuration variables for further options.
 
@@ -85,7 +86,7 @@ from. All options can be configured using variables in `configuration.auto.tfvar
    the repository you specify in `argocd_app_of_apps_source`. Credentials for a private repository can be configured
    and installed with OpenTofu using `install_argocd_app_of_apps_git_repo_secret` and the related variables:
    * install_cilium_lb_config = false
-   * argocd_helm_values: add your Helm values and override defaults, for instance keep server insecure and switch off ingress
+   * argocd_helm_values/argocd_helm_yaml_values: add your Helm values and override defaults, for instance keep server insecure and switch off ingress
    * install_argocd_app_of_apps = true
    * argocd_app_of_apps_source = YOUR SOURCE SETTINGS
    * install_argocd_app_of_apps_git_repo_secret = true
@@ -95,10 +96,7 @@ from. All options can be configured using variables in `configuration.auto.tfvar
 These are two use cases I envision here. Please regard them as examples. Of course, you can combine the variables to
 any other setup which suits your needs.
 
-For doing a **GitOps quick start** you can fork this repository and point the `argocd_app_of_apps_source` to the 
-`argocd` directory of your newly forked repository. This way you can make use of the example Kubernetes resources in
-`argocd` directory and edit them to match your infrastructure. 
-
+#### Quick start
 Create a `configuration.auto.tfvars` like so and edit it to your liking:
 ```shell
 $ cd kubernetes
@@ -124,6 +122,11 @@ and check on sync status of your apps:
 $ argocd login --port-forward --port-forward-namespace argocd --plaintext
 $ argocd app list --port-forward --port-forward-namespace argocd --plaintext
 ```
+
+#### GitOps Quick Start
+For doing a **GitOps quick start** you can fork this repository and point the `argocd_app_of_apps_source` to the 
+`argocd` directory of your newly forked repository. This way you can make use of the example Kubernetes resources in
+`argocd` directory and edit them to match your infrastructure.
 
 ## Roadmap
 Proxmox part:
