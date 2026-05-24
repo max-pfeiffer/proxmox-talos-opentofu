@@ -108,3 +108,14 @@ variable "vlan_tag" {
   default     = 0
 }
 
+variable "talos_machine_config_patch_controlplane" {
+  description = "Configuration patch which will be applied to all controlplane nodes"
+  type        = string
+  default     = ""
+}
+
+variable "talos_machine_config_patch_worker" {
+  description = "Configuration patch which will be applied to all worker nodes"
+  type        = string
+  default     = ""
+}

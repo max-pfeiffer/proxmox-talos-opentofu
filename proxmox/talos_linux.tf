@@ -30,20 +30,23 @@ resource "talos_machine_configuration_apply" "controlplane" {
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   for_each                    = var.node_data.controlplanes
   node                        = each.key
-  config_patches = [
-    templatefile("${path.module}/templates/machine_config_patches_controlplane.tftpl", {
-      hostname             = each.value.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), each.key)) : each.value.hostname
-      install_disk         = each.value.install_disk
-      install_image        = each.value.install_image
-      dns                  = var.domain_name_server
-      ip_address           = "${each.key}/24"
-      network              = var.network
-      network_gateway      = var.network_gateway
-      vip_shared_ip        = var.cluster_vip_shared_ip
-      gateway_api_manifest = file("${path.module}/gateway-api/gateway-api-crds-v1.3.yaml")
-      cilium_manifest      = data.helm_template.cilium.manifest
-    }),
-  ]
+  config_patches = concat(
+    [
+      templatefile("${path.module}/templates/machine_config_patches_controlplane.tftpl", {
+        hostname             = each.value.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), each.key)) : each.value.hostname
+        install_disk         = each.value.install_disk
+        install_image        = each.value.install_image
+        dns                  = var.domain_name_server
+        ip_address           = "${each.key}/24"
+        network              = var.network
+        network_gateway      = var.network_gateway
+        vip_shared_ip        = var.cluster_vip_shared_ip
+        gateway_api_manifest = file("${path.module}/gateway-api/gateway-api-crds-v1.3.yaml")
+        cilium_manifest      = data.helm_template.cilium.manifest
+      }),
+    ],
+    var.talos_machine_config_patch_controlplane != "" ? [var.talos_machine_config_patch_controlplane] : []
+  )
 }
 
 resource "talos_machine_configuration_apply" "worker" {
@@ -52,17 +55,20 @@ resource "talos_machine_configuration_apply" "worker" {
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   for_each                    = var.node_data.workers
   node                        = each.key
-  config_patches = [
-    templatefile("${path.module}/templates/machine_config_patches_worker.tftpl", {
-      hostname        = each.value.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), each.key)) : each.value.hostname
-      install_disk    = each.value.install_disk
-      install_image   = each.value.install_image
-      dns             = var.domain_name_server
-      ip_address      = "${each.key}/24"
-      network         = var.network
-      network_gateway = var.network_gateway
-    })
-  ]
+  config_patches = concat(
+    [
+      templatefile("${path.module}/templates/machine_config_patches_worker.tftpl", {
+        hostname        = each.value.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), each.key)) : each.value.hostname
+        install_disk    = each.value.install_disk
+        install_image   = each.value.install_image
+        dns             = var.domain_name_server
+        ip_address      = "${each.key}/24"
+        network         = var.network
+        network_gateway = var.network_gateway
+      }),
+    ],
+    var.talos_machine_config_patch_worker != "" ? [var.talos_machine_config_patch_worker] : []
+  )
 }
 
 resource "talos_machine_bootstrap" "this" {
