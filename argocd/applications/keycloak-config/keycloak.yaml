@@ -1,0 +1,10 @@
+apiVersion: v1.edp.epam.com/v1
+kind: Keycloak
+metadata:
+  name: keycloak-connection
+  annotations:
+    argocd.argoproj.io/sync-wave: "200"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  secret: keycloak-admin
+  url: http://keycloak-service.keycloak:8080

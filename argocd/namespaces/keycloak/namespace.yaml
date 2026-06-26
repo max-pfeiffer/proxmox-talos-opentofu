@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: keycloak
+  labels:
+    name: keycloak
+    tls-certificates: http01
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1000"
+spec: {}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  limits:
+  - default:
+      cpu: 500m
+      memory: 1G
+    defaultRequest:
+      cpu: 100m
+      memory: 512M
+    max:
+      cpu: 500m
+      memory: 1G
+    type: Container
