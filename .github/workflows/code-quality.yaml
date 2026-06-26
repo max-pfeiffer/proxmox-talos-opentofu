@@ -1,0 +1,23 @@
+name: Code quality
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+      - name: Create Virtual environment
+        run: uv sync
+      - name: Run pre-commit hooks
+        run: uv run pre-commit run --all-files --show-diff-on-failure

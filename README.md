@@ -142,6 +142,16 @@ GitOps part:
 
 I am happy to receive pull requests for any improvements.
 
+## Development
+[Install uv](https://docs.astral.sh/uv/getting-started/installation/) and sync dependencies:
+```shell
+uv sync
+```
+Install git hooks:
+```shell
+pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push 
+```
+
 ## Information Sources
 * [Talos Linux documentation](https://www.talos.dev/v1.8/)
 * [Talos Linux Image Factory](https://factory.talos.dev/)
