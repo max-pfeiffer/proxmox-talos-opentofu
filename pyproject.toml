@@ -1,0 +1,8 @@
+[project]
+name = "proxmox-talos-opentofu"
+version = "1.3.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "pre-commit>=4.6.0",
+]
