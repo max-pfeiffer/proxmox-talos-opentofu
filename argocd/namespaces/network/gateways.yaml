@@ -9,15 +9,17 @@ spec:
   gatewayClassName: cilium
   addresses:
   - type: IPAddress
-    # Configure your IP address here
-    value: 192.168.10.96
+    value: 192.168.20.191
   listeners:
   - name: http
     protocol: HTTP
     port: 80
     allowedRoutes:
-        namespaces:
-          from: All
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            tls-certificates: http01
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -30,19 +32,53 @@ spec:
   gatewayClassName: cilium
   addresses:
   - type: IPAddress
-    # Configure your IP address here
-    value: 192.168.10.97
+    value: 192.168.20.192
   listeners:
   - name: argocd
     protocol: HTTPS
     port: 443
-    # Configure the FQDN for ArgoCD here
-    hostname: "argocd.yourdomain.com"
+    hostname: "argocd.yourdomain.example" # todo: adjust to your domain
     tls:
       mode: Terminate
       certificateRefs:
       - kind: Secret
         name: argocd-tls
+        namespace: argocd
     allowedRoutes:
-        namespaces:
-          from: All
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            tls-certificates: http01
+  - name: keycloak
+    protocol: HTTPS
+    port: 443
+    hostname: "keycloak.yourdomain.example" # todo: adjust to your domain
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: keycloak-tls
+        namespace: keycloak
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            tls-certificates: http01
+  - name: keycloak-admin
+    protocol: HTTPS
+    port: 443
+    hostname: "keycloak-admin.youdomain.example" # todo: adjust to your domain
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: keycloak-admin-tls
+        namespace: keycloak
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            tls-certificates: http01

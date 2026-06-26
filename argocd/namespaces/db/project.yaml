@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: db
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-900"
+spec:
+  description: Databases
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: db
+      server: '*'

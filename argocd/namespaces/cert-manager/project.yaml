@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: cert
+  name: cert-manager
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-900"
@@ -21,7 +21,7 @@ spec:
   sourceRepos:
     - '*'
   destinations:
-    - namespace: cert
+    - namespace: cert-manager
       server: '*'
     - namespace: kube-system
       server: '*'

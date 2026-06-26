@@ -10,9 +10,8 @@ spec:
   - name: public
     namespace: network
     sectionName: argocd
-  hostnames:
-  # Configure the FQDN for ArgoCD here
-  - "argocd.yourdomain.com"
+  hostnames: # todo: adjust to your domain
+  - "argocd.yourdomain.example"
   rules:
   - matches:
     - path:

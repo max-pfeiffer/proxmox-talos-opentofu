@@ -1,0 +1,30 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+  annotations:
+    argocd.argoproj.io/sync-wave: "200"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: postgresql-keycloak-rw.db
+    usernameSecret:
+      name: keycloak-db-user
+      key: username
+    passwordSecret:
+      name: keycloak-db-user
+      key: password
+  http:
+    httpEnabled: true
+  ingress:
+    enabled: false
+  hostname:
+    hostname: "https://keycloak.yourdomain.example" # todo: adjust to your domain
+    admin: "https://keycloak-admin.yourdomain.example" # todo: adjust to your domain
+  proxy:
+    headers: xforwarded
+  bootstrapAdmin:
+    user:
+      secret: keycloak-admin

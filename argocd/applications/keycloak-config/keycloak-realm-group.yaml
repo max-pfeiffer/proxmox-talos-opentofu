@@ -1,0 +1,12 @@
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: argocd-admins
+  annotations:
+    argocd.argoproj.io/sync-wave: "202"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  name: argocd-admins
+  realmRef:
+    name: homelab
+    kind: KeycloakRealm
