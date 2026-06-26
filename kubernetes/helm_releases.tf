@@ -6,8 +6,8 @@ resource "helm_release" "argocd" {
   repository = "https://argoproj.github.io/argo-helm"
   namespace  = kubernetes_namespace_v1.argocd.id
   timeout    = 120
-  set    = var.argocd_helm_values
-  values = var.argocd_helm_yaml_values
+  set        = var.argocd_helm_values
+  values     = var.argocd_helm_yaml_values
 }
 
 resource "helm_release" "cilium_lb_config" {
