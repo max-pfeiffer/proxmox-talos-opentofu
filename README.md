@@ -158,7 +158,7 @@ pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre
 * [Cilium documentation](https://docs.cilium.io/en/stable/)
 * [Gateway API](https://gateway-api.sigs.k8s.io/)
 * Terraform providers:
-  * [terraform-provider-proxmox](https://github.com/Telmate/terraform-provider-proxmox)
+  * [terraform-provider-proxmox](https://github.com/bpg/terraform-provider-proxmox)
   * [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)
   * [terraform-provider-kubernetes](https://github.com/hashicorp/terraform-provider-kubernetes) 
   * [terraform-provider-helm](https://github.com/hashicorp/terraform-provider-helm)
