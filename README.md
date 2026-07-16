@@ -130,7 +130,6 @@ For doing a **GitOps quick start** you can fork this repository and point the `a
 
 ## Roadmap
 Proxmox part:
-* make node resources configurable (CPU, memory, etc.)
 * make version upgrades possible for Kubernetes Nodes with OpenTofu
 
 GitOps part:

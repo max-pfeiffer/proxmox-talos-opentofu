@@ -17,12 +17,12 @@ resource "proxmox_virtual_environment_vm" "kubernetes_control_plane" {
   }
 
   cpu {
-    cores = 2
+    cores = each.value.cpu_cores
     type  = "host"
   }
 
   memory {
-    dedicated = 8192
+    dedicated = each.value.memory
   }
 
   vga {
@@ -37,7 +37,7 @@ resource "proxmox_virtual_environment_vm" "kubernetes_control_plane" {
   disk {
     interface    = "virtio0"
     datastore_id = var.proxmox_storage_device
-    size         = 50
+    size         = each.value.disk_size
     discard      = "on"
   }
 
@@ -85,12 +85,12 @@ resource "proxmox_virtual_environment_vm" "kubernetes_worker" {
   }
 
   cpu {
-    cores = 2
+    cores = each.value.cpu_cores
     type  = "host"
   }
 
   memory {
-    dedicated = 16384
+    dedicated = each.value.memory
   }
 
   vga {
@@ -105,7 +105,7 @@ resource "proxmox_virtual_environment_vm" "kubernetes_worker" {
   disk {
     interface    = "virtio0"
     datastore_id = var.proxmox_storage_device
-    size         = 50
+    size         = each.value.disk_size
     discard      = "on"
   }
 

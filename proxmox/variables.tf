@@ -55,17 +55,23 @@ variable "cluster_vip_shared_ip" {
 }
 
 variable "node_data" {
-  description = "A map of node data"
+  description = "A map of node data, cpu_cores, memory (MB) and disk_size (GB) are configurable per node"
   type = object({
     controlplanes = map(object({
       install_disk  = string
       install_image = string
       hostname      = optional(string)
+      cpu_cores     = optional(number, 2)
+      memory        = optional(number, 8192)
+      disk_size     = optional(number, 50)
     }))
     workers = map(object({
       install_disk  = string
       install_image = string
       hostname      = optional(string)
+      cpu_cores     = optional(number, 2)
+      memory        = optional(number, 16384)
+      disk_size     = optional(number, 50)
     }))
   })
   default = {
