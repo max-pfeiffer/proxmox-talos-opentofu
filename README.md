@@ -4,8 +4,8 @@ A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) ru
 Provisioning is done with [OpenTofu](https://opentofu.org/).
 
 Kubernetes cluster features:
-* [Talos Linux v1.11.6](https://www.talos.dev/) 
-* Kubernetes v1.34.2
+* [Talos Linux v1.13.8](https://www.talos.dev/) 
+* Kubernetes v1.36.3
 * no kube-proxy
 * [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
   * without kube-proxy
@@ -67,8 +67,8 @@ Test if your cluster access works by listing the nodes:
 ```shell
 $ kubectl get nodes
 NAME            STATUS   ROLES           AGE   VERSION
-your-cp-0       Ready    control-plane   5d    v1.34.2
-your-worker-0   Ready    <none>          5d    v1.34.2
+your-cp-0       Ready    control-plane   5d    v1.36.3
+your-worker-0   Ready    <none>          5d    v1.36.3
 ```
 You might need to wait a bit until the nodes come up. Proceed with the next step when all nodes are in the `Ready`
 state.

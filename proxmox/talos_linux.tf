@@ -1,5 +1,16 @@
 resource "talos_machine_secrets" "this" {}
 
+locals {
+  controlplane_hostnames = {
+    for k, v in var.node_data.controlplanes :
+    k => v.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), k)) : v.hostname
+  }
+  worker_hostnames = {
+    for k, v in var.node_data.workers :
+    k => v.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), k)) : v.hostname
+  }
+}
+
 data "talos_machine_configuration" "controlplane" {
   for_each           = var.node_data.controlplanes
   cluster_name       = var.cluster_name
@@ -11,7 +22,6 @@ data "talos_machine_configuration" "controlplane" {
   config_patches = concat(
     [
       templatefile("${path.module}/templates/machine_config_patches_controlplane.tftpl", {
-        hostname             = each.value.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), each.key)) : each.value.hostname
         install_disk         = each.value.install_disk
         install_image        = each.value.install_image
         dns                  = var.domain_name_server
@@ -21,6 +31,9 @@ data "talos_machine_configuration" "controlplane" {
         vip_shared_ip        = var.cluster_vip_shared_ip
         gateway_api_manifest = file("${path.module}/gateway-api/gateway-api-crds-v1.3.yaml")
         cilium_manifest      = data.helm_template.cilium.manifest
+      }),
+      templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
+        hostname = local.controlplane_hostnames[each.key]
       }),
     ],
     var.talos_machine_config_patch_controlplane != "" ? [var.talos_machine_config_patch_controlplane] : []
@@ -38,13 +51,15 @@ data "talos_machine_configuration" "worker" {
   config_patches = concat(
     [
       templatefile("${path.module}/templates/machine_config_patches_worker.tftpl", {
-        hostname        = each.value.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), each.key)) : each.value.hostname
         install_disk    = each.value.install_disk
         install_image   = each.value.install_image
         dns             = var.domain_name_server
         ip_address      = "${each.key}/24"
         network         = var.network
         network_gateway = var.network_gateway
+      }),
+      templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
+        hostname = local.worker_hostnames[each.key]
       }),
     ],
     var.talos_machine_config_patch_worker != "" ? [var.talos_machine_config_patch_worker] : []
@@ -64,6 +79,11 @@ resource "talos_machine" "controlplane" {
   node                  = each.key
   client_configuration  = talos_machine_secrets.this.client_configuration
   machine_configuration = data.talos_machine_configuration.controlplane[each.key].machine_configuration
+  image                 = each.value.install_image
+  # No Kubernetes cluster (and thus no kubeconfig) exists yet at initial bring-up, which
+  # talos_cluster_kubeconfig.this needs anyway (it depends on bootstrap, which depends on
+  # this resource) — so draining is not obtainable here without a dependency cycle.
+  drain_on_upgrade = false
 }
 
 resource "talos_machine" "worker" {
@@ -73,6 +93,8 @@ resource "talos_machine" "worker" {
   node                  = each.key
   client_configuration  = talos_machine_secrets.this.client_configuration
   machine_configuration = data.talos_machine_configuration.worker[each.key].machine_configuration
+  image                 = each.value.install_image
+  drain_on_upgrade      = false
 }
 
 resource "talos_machine_bootstrap" "this" {
