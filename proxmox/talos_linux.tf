@@ -1,35 +1,13 @@
 resource "talos_machine_secrets" "this" {}
 
 data "talos_machine_configuration" "controlplane" {
+  for_each           = var.node_data.controlplanes
   cluster_name       = var.cluster_name
   cluster_endpoint   = "https://${var.cluster_vip_shared_ip}:6443"
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   talos_version      = var.talos_version
   kubernetes_version = var.kubernetes_version
-}
-
-data "talos_machine_configuration" "worker" {
-  cluster_name       = var.cluster_name
-  cluster_endpoint   = "https://${var.cluster_vip_shared_ip}:6443"
-  machine_type       = "worker"
-  machine_secrets    = talos_machine_secrets.this.machine_secrets
-  talos_version      = var.talos_version
-  kubernetes_version = var.kubernetes_version
-}
-
-data "talos_client_configuration" "this" {
-  cluster_name         = var.cluster_name
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = concat([var.cluster_vip_shared_ip], [for k, v in var.node_data.controlplanes : k])
-}
-
-resource "talos_machine_configuration_apply" "controlplane" {
-  depends_on                  = [proxmox_virtual_environment_vm.kubernetes_control_plane]
-  client_configuration        = talos_machine_secrets.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  for_each                    = var.node_data.controlplanes
-  node                        = each.key
   config_patches = concat(
     [
       templatefile("${path.module}/templates/machine_config_patches_controlplane.tftpl", {
@@ -49,12 +27,14 @@ resource "talos_machine_configuration_apply" "controlplane" {
   )
 }
 
-resource "talos_machine_configuration_apply" "worker" {
-  depends_on                  = [proxmox_virtual_environment_vm.kubernetes_worker]
-  client_configuration        = talos_machine_secrets.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
-  for_each                    = var.node_data.workers
-  node                        = each.key
+data "talos_machine_configuration" "worker" {
+  for_each           = var.node_data.workers
+  cluster_name       = var.cluster_name
+  cluster_endpoint   = "https://${var.cluster_vip_shared_ip}:6443"
+  machine_type       = "worker"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
+  talos_version      = var.talos_version
+  kubernetes_version = var.kubernetes_version
   config_patches = concat(
     [
       templatefile("${path.module}/templates/machine_config_patches_worker.tftpl", {
@@ -71,8 +51,32 @@ resource "talos_machine_configuration_apply" "worker" {
   )
 }
 
+data "talos_client_configuration" "this" {
+  cluster_name         = var.cluster_name
+  client_configuration = talos_machine_secrets.this.client_configuration
+  endpoints            = concat([var.cluster_vip_shared_ip], [for k, v in var.node_data.controlplanes : k])
+}
+
+resource "talos_machine" "controlplane" {
+  depends_on = [proxmox_virtual_environment_vm.kubernetes_control_plane]
+  for_each   = var.node_data.controlplanes
+
+  node                  = each.key
+  client_configuration  = talos_machine_secrets.this.client_configuration
+  machine_configuration = data.talos_machine_configuration.controlplane[each.key].machine_configuration
+}
+
+resource "talos_machine" "worker" {
+  depends_on = [proxmox_virtual_environment_vm.kubernetes_worker]
+  for_each   = var.node_data.workers
+
+  node                  = each.key
+  client_configuration  = talos_machine_secrets.this.client_configuration
+  machine_configuration = data.talos_machine_configuration.worker[each.key].machine_configuration
+}
+
 resource "talos_machine_bootstrap" "this" {
-  depends_on = [talos_machine_configuration_apply.controlplane]
+  depends_on = [talos_machine.controlplane]
 
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.node_data.controlplanes : k][0]
