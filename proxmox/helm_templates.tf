@@ -81,6 +81,13 @@ data "helm_template" "cilium" {
       value = "true"
       type  = "string"
     },
+    # Generate Hubble TLS certificates in-cluster with a CronJob instead of at Helm render time,
+    # otherwise every render produces new certificates and the machine config never converges
+    # See: https://docs.cilium.io/en/stable/observability/hubble/configuration/tls/
+    {
+      name  = "hubble.tls.auto.method"
+      value = "cronJob"
+    },
     # Egress Gateway
     # See: https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/
     {
