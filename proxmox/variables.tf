@@ -22,24 +22,24 @@ variable "proxmox_storage_device" {
 
 variable "talos_version" {
   type    = string
-  default = "1.11.6"
+  default = "1.13.8"
 }
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.34.2"
+  default = "1.36.3"
 }
 
 variable "talos_linux_iso_image_url" {
   description = "URL of the Talos ISO image for initially booting the VM"
   type        = string
-  default     = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/v1.11.6/nocloud-amd64.iso"
+  default     = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/v1.13.8/nocloud-amd64.iso"
 }
 
 variable "talos_linux_iso_image_filename" {
   description = "Filename of the Talos ISO image for initially booting the VM"
   type        = string
-  default     = "talos-linux-v1.11.6-qemu-guest-agent-amd64.iso"
+  default     = "talos-linux-v1.13.8-qemu-guest-agent-amd64.iso"
 }
 
 variable "cluster_name" {
@@ -60,7 +60,7 @@ variable "node_data" {
     controlplanes = map(object({
       install_disk  = string
       install_image = string
-      hostname      = optional(string)
+      hostname      = string
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 8192)
       disk_size     = optional(number, 50)
@@ -68,7 +68,7 @@ variable "node_data" {
     workers = map(object({
       install_disk  = string
       install_image = string
-      hostname      = optional(string)
+      hostname      = string
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 16384)
       disk_size     = optional(number, 50)
@@ -78,13 +78,15 @@ variable "node_data" {
     controlplanes = {
       "192.168.1.101" = {
         install_disk  = "/dev/vda"
-        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.6"
+        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "talos-cp-0"
       },
     }
     workers = {
       "192.168.1.102" = {
         install_disk  = "/dev/vda"
-        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.11.6"
+        install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "talos-worker-0"
       },
     }
   }
