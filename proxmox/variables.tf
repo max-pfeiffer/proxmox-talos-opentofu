@@ -60,7 +60,7 @@ variable "node_data" {
     controlplanes = map(object({
       install_disk  = string
       install_image = string
-      hostname      = optional(string)
+      hostname      = string
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 8192)
       disk_size     = optional(number, 50)
@@ -68,7 +68,7 @@ variable "node_data" {
     workers = map(object({
       install_disk  = string
       install_image = string
-      hostname      = optional(string)
+      hostname      = string
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 16384)
       disk_size     = optional(number, 50)
@@ -79,12 +79,14 @@ variable "node_data" {
       "192.168.1.101" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "talos-cp-0"
       },
     }
     workers = {
       "192.168.1.102" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "talos-worker-0"
       },
     }
   }

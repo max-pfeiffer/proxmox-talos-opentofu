@@ -1,16 +1,5 @@
 resource "talos_machine_secrets" "this" {}
 
-locals {
-  controlplane_hostnames = {
-    for k, v in var.node_data.controlplanes :
-    k => v.hostname == null ? format("%s-cp-%s", var.cluster_name, index(keys(var.node_data.controlplanes), k)) : v.hostname
-  }
-  worker_hostnames = {
-    for k, v in var.node_data.workers :
-    k => v.hostname == null ? format("%s-worker-%s", var.cluster_name, index(keys(var.node_data.workers), k)) : v.hostname
-  }
-}
-
 data "talos_machine_configuration" "controlplane" {
   for_each           = var.node_data.controlplanes
   cluster_name       = var.cluster_name
@@ -33,7 +22,7 @@ data "talos_machine_configuration" "controlplane" {
         cilium_manifest      = data.helm_template.cilium.manifest
       }),
       templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
-        hostname = local.controlplane_hostnames[each.key]
+        hostname = each.value.hostname
       }),
     ],
     var.talos_machine_config_patch_controlplane != "" ? [var.talos_machine_config_patch_controlplane] : []
@@ -59,7 +48,7 @@ data "talos_machine_configuration" "worker" {
         network_gateway = var.network_gateway
       }),
       templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
-        hostname = local.worker_hostnames[each.key]
+        hostname = each.value.hostname
       }),
     ],
     var.talos_machine_config_patch_worker != "" ? [var.talos_machine_config_patch_worker] : []

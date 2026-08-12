@@ -18,6 +18,7 @@ cluster_name = "your-cluster-name"
 # VIP address for the control planes, see https://www.talos.dev/v1.13/talos-guides/network/vip/
 cluster_vip_shared_ip = "192.168.10.100"
 # The node configuration, adjust it to your liking
+# hostname is required per node.
 # Optionally you can configure the resources per node with cpu_cores, memory (MB) and disk_size (GB),
 # defaults are: control planes 2 cores, 8192 MB, 50 GB / workers 2 cores, 16384 MB, 50 GB
 node_data = {
@@ -25,6 +26,7 @@ node_data = {
       "192.168.10.101" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-cp-0"
         cpu_cores     = 2
         memory        = 8192
         disk_size     = 50
@@ -32,28 +34,34 @@ node_data = {
       "192.168.10.102" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-cp-1"
       },
       "192.168.10.103" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-cp-2"
       },
     }
     workers = {
       "192.168.10.104" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-worker-0"
       },
       "192.168.10.105" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-worker-1"
       },
       "192.168.10.106" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-worker-2"
       },
       "192.168.10.107" = {
         install_disk  = "/dev/vda"
         install_image = "factory.talos.dev/nocloud-installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.13.8"
+        hostname      = "your-cluster-name-worker-3"
       },
     }
   }
