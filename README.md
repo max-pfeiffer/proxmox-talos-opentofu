@@ -7,13 +7,13 @@ Kubernetes cluster features:
 * [Talos Linux v1.13.8](https://www.talos.dev/) 
 * Kubernetes v1.36.3
 * no kube-proxy
-* [Cilium v1.18.3](https://cilium.io/) as Container Network Interface (CNI) 
+* [Cilium v1.20.0](https://cilium.io/) as Container Network Interface (CNI) 
   * without kube-proxy
   * with [L2 loadbalancer support](https://docs.cilium.io/en/stable/network/l2-announcements/)
   * with [Ingress controller support](https://docs.cilium.io/en/stable/network/servicemesh/ingress/)
   * with [Gateway API support](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/)
   * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
-* [Gateway API v1.3.0](https://gateway-api.sigs.k8s.io/) CRDs are installed 
+* [Gateway API v1.6.1](https://gateway-api.sigs.k8s.io/) CRDs (standard channel) are installed 
 * [ArgoCD v3.4.2](https://argoproj.github.io/cd/)
 
 This Kubernetes cluster is meant to be used in a test or home lab environment.
