@@ -5,7 +5,7 @@ repos:
       - id: check-merge-conflict
       - id: detect-private-key
       - id: check-added-large-files
-        args: ['--maxkb=1024']
+        args: ['--maxkb=2048']
   - repo: https://github.com/AleksaC/terraform-py
     rev: v1.15.7
     hooks:
