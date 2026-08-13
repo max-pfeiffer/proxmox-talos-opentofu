@@ -18,7 +18,7 @@ cluster_name = "your-cluster-name"
 # VIP address for the control planes, see https://www.talos.dev/v1.13/talos-guides/network/vip/
 cluster_vip_shared_ip = "192.168.10.100"
 # The node configuration, adjust it to your liking
-# hostname is required per node.
+# hostname is optional per node, without it Talos Linux generates one itself.
 # Optionally you can configure the resources per node with cpu_cores, memory (MB) and disk_size (GB),
 # defaults are: control planes 2 cores, 8192 MB, 50 GB / workers 2 cores, 16384 MB, 50 GB
 node_data = {

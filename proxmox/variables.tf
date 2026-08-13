@@ -55,12 +55,12 @@ variable "cluster_vip_shared_ip" {
 }
 
 variable "node_data" {
-  description = "A map of node data, cpu_cores, memory (MB) and disk_size (GB) are configurable per node"
+  description = "A map of node data, hostname, cpu_cores, memory (MB) and disk_size (GB) are configurable per node. Without a hostname Talos Linux generates one itself."
   type = object({
     controlplanes = map(object({
       install_disk  = string
       install_image = string
-      hostname      = string
+      hostname      = optional(string)
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 8192)
       disk_size     = optional(number, 50)
@@ -68,7 +68,7 @@ variable "node_data" {
     workers = map(object({
       install_disk  = string
       install_image = string
-      hostname      = string
+      hostname      = optional(string)
       cpu_cores     = optional(number, 2)
       memory        = optional(number, 16384)
       disk_size     = optional(number, 50)

@@ -21,10 +21,13 @@ data "talos_machine_configuration" "controlplane" {
         gateway_api_manifest = file("${path.module}/gateway-api/gateway-api-crds-v1.3.yaml")
         cilium_manifest      = data.helm_template.cilium.manifest
       }),
+    ],
+    # Without a hostname Talos Linux generates one itself
+    each.value.hostname != null ? [
       templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
         hostname = each.value.hostname
-      }),
-    ],
+      })
+    ] : [],
     var.talos_machine_config_patch_controlplane != "" ? [var.talos_machine_config_patch_controlplane] : []
   )
 }
@@ -47,10 +50,13 @@ data "talos_machine_configuration" "worker" {
         network         = var.network
         network_gateway = var.network_gateway
       }),
+    ],
+    # Without a hostname Talos Linux generates one itself
+    each.value.hostname != null ? [
       templatefile("${path.module}/templates/machine_config_patch_hostname.tftpl", {
         hostname = each.value.hostname
-      }),
-    ],
+      })
+    ] : [],
     var.talos_machine_config_patch_worker != "" ? [var.talos_machine_config_patch_worker] : []
   )
 }
