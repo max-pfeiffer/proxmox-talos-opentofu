@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.0.0...2.1.0) (2026-08-13)
+
+
+### Features
+
+* Added Kubernetes resources for Keycloak and ArgoCD configuration ([653c109](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/653c1090a88f8ae683ba17a18f0297705d9135cc))
+* updated network stack to Cilium 1.20.0 and Gateway API 1.6.1 ([1715ef5](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/1715ef5a5236ce9a4926f2b5ec7f166519292004))
+
+
+### Documentation
+
+* scratched the GitOps Roadmap ([eb2e822](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/eb2e822e8c21f993477484f2c722e43f7b89b8d6))
+* updated docs with network stack changes ([29fae27](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/29fae27bef33cc06c5b4d43925988728841cca25))
+
 ## [2.0.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/1.4.0...2.0.0) (2026-08-12)
 
 
