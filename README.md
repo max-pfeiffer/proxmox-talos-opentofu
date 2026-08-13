@@ -185,13 +185,6 @@ Proxmox part:
 * automate safe, node-by-node upgrade sequencing (draining, `-parallelism=1` equivalent via `depends_on`)
   for Talos/Kubernetes version bumps, see [Upgrading](#upgrading)
 
-GitOps part:
-* add more storage options i.e. Ceph, local
-* add Keycloak operator and Keycloak instance for SSO
-* add Prometheus/Grafana for monitoring
-* add Alloy/Loki for logging
-* add Velero for disaster recovery
-
 I am happy to receive pull requests for any improvements.
 
 ## Development

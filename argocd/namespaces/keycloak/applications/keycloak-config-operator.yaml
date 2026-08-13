@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-config-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: keycloak
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: keycloak
+  source:
+    chart: "keycloak-operator"
+    repoURL: "https://epam.github.io/edp-helm-charts/stable"
+    targetRevision: "1.33.0"
+    helm:
+      valuesObject:
+        name: keycloak-config-operator
+        enableOwnerRef: false

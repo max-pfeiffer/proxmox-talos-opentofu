@@ -26,4 +26,3 @@ spec:
           enabled: true
         controller:
           runOnControlPlane: true
-
