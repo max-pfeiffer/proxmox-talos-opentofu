@@ -46,8 +46,9 @@ I added the Kubernetes resources in the `argocd` directory mainly for demonstrat
 
 ### Proxmox VE
 First step is to provision the Proxmox part: create a `configuration.auto.tfvars` file based on the example and
-edit it so it suits your needs. Each control plane and worker node in `node_data` requires a `hostname`; CPU cores,
-memory and disk size are optional and fall back to sensible defaults:
+edit it so it suits your needs. For each control plane and worker node in `node_data`, the `hostname`, CPU cores,
+memory and disk size are optional and fall back to sensible defaults. When you omit the `hostname`, Talos Linux
+generates one itself:
 ```shell
 $ cd proxmox
 $ cp configuration.auto.tfvars.example configuration.auto.tfvars
