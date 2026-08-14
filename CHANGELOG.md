@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.1.0...2.2.0) (2026-08-14)
+
+
+### Features
+
+* updated ArgoCD v3.5.1 and OpenTofu providers ([b7a7fc5](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/b7a7fc5795f46a8986e589b4f34693dc09fe1c7d))
+* updated ArgoCD v3.5.1 and OpenTofu providers ([9ac008a](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/9ac008afd41a7abc40d7b328ac9e9d2d68911eb8))
+
 ## [2.1.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.0.0...2.1.0) (2026-08-13)
 
 
