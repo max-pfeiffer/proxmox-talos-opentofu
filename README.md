@@ -14,7 +14,7 @@ Kubernetes cluster features:
   * with [Gateway API support](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/)
   * with [Egress gateway support](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
 * [Gateway API v1.6.1](https://gateway-api.sigs.k8s.io/) CRDs (standard channel) are installed 
-* [ArgoCD v3.4.2](https://argoproj.github.io/cd/)
+* [ArgoCD v3.5.1](https://argoproj.github.io/cd/)
 
 This Kubernetes cluster is meant to be used in a test or home lab environment.
 
