@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.2.0...2.3.0) (2026-08-23)
+
+
+### Features
+
+* made proxmox_download_file more resilient when installing multi… ([4fc8cf3](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/4fc8cf3edee2020fe9668c8058ce6a21d94d7c5a))
+* made proxmox_download_file more resilient when installing multiple projects on the same Proxmox host ([121ab18](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/121ab182937478f223dffecbc734323b30336155))
+
+
+### Documentation
+
+* added badges to Readme ([52ccd98](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/52ccd98765c081abe089fbadfcc87072c4e919f2))
+
 ## [2.2.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.1.0...2.2.0) (2026-08-14)
 
 
