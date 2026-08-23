@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.3.1...2.4.0) (2026-08-23)
+
+
+### Features
+
+* added a flag for controlling Cilium ingress controller installa… ([f3a9c6e](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/f3a9c6ea3e97b30315b690468fef005208359d02))
+* added a flag for controlling Cilium ingress controller installation ([b11f202](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/b11f2026faeae1d50c25b21b9a41a12bc2895330))
+
 ## [2.3.1](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.3.0...2.3.1) (2026-08-23)
 
 
