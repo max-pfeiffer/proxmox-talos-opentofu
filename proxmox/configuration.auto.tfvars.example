@@ -69,3 +69,9 @@ node_data = {
 network            = "192.168.10.0/24"
 network_gateway    = "192.168.10.1"
 domain_name_server = "192.168.10.1"
+
+# Cilium
+# Enables the Cilium Ingress controller
+# See: https://docs.cilium.io/en/stable/network/servicemesh/ingress/
+ingress_controller_enabled = true
+
