@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.1](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.3.0...2.3.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* fixed proxmox provider config ([7e21765](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/7e217652335e5780664646027134054ffe1e3481))
+* fixed proxmox provider config ([e11a4c6](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/e11a4c6c37d112d23f7c273291a28ca84c3f7eb7))
+
 ## [2.3.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.2.0...2.3.0) (2026-08-23)
 
 
