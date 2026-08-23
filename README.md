@@ -1,3 +1,8 @@
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![OpenTofu](https://img.shields.io/badge/OpenTofu-FFDA18?logo=opentofu&logoColor=black)](https://opentofu.org/)
+[![Code quality](https://github.com/max-pfeiffer/proxmox-talos-opentofu/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/max-pfeiffer/proxmox-talos-opentofu/actions/workflows/code-quality.yaml)
+[![Release](https://github.com/max-pfeiffer/proxmox-talos-opentofu/actions/workflows/release.yaml/badge.svg)](https://github.com/max-pfeiffer/proxmox-talos-opentofu/actions/workflows/release.yaml)
+
 # Proxmox Talos OpenTofu - Turnkey Kubernetes Cluster
 A turnkey Kubernetes cluster built with [Talos Linux](https://www.talos.dev/) running on a
 [Proxmox VE hypervisor](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview).
