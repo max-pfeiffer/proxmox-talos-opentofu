@@ -127,3 +127,9 @@ variable "talos_machine_config_patch_worker" {
   type        = string
   default     = ""
 }
+
+variable "ingress_controller_enabled" {
+  description = "Enables the Cilium Ingress controller, see https://docs.cilium.io/en/stable/network/servicemesh/ingress/"
+  type        = bool
+  default     = true
+}
