@@ -136,59 +136,87 @@ For doing a **GitOps quick start** you can fork this repository and point the `a
 `argocd` directory and edit them to match your infrastructure.
 
 ## Upgrading
-Talos OS and Kubernetes versions are managed declaratively through the `talos_machine` resource
-(`proxmox/talos_linux.tf`), part of the [terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos)
-v0.12 alpha line. On every `tofu plan`/`apply` the provider reads the running Talos version and the
-active machine configuration hash from each node; changing `talos_version`/`install_image` or
-`kubernetes_version` in `configuration.auto.tfvars` and re-applying reconciles the drift.
+Talos OS and Kubernetes versions are managed declaratively in `proxmox/talos_linux.tf` through the
+[terraform-provider-talos](https://github.com/siderolabs/terraform-provider-talos) v0.12.0 resources:
 
-Gracefully orchestrating in-place upgrades through Terraform/OpenTofu is a long-standing rough edge in
+* `talos_machine` owns each node's machine configuration and its Talos OS version. On every
+  `tofu plan`/`apply` the provider reads the running Talos version, the active Image Factory
+  schematic and the applied machine configuration hash from the node and reconciles any drift.
+* `talos_cluster` bootstraps etcd and owns the Kubernetes version. Changing its `kubernetes_version`
+  runs Talos' `upgrade-k8s` procedure, which pre-pulls images and upgrades kube-apiserver,
+  kube-controller-manager, kube-scheduler, kube-proxy and the kubelets sequentially with health
+  gating.
+
+Gracefully orchestrating in-place upgrades through Terraform/OpenTofu has long been a rough edge in
 the Talos provider — see [siderolabs/terraform-provider-talos#140](https://github.com/siderolabs/terraform-provider-talos/issues/140)
-for the multi-year discussion on graceful, node-by-node upgrades, and [#381](https://github.com/siderolabs/terraform-provider-talos/issues/381)
-for clarification that changing `talos_version`, despite some contradictory wording across the
-provider's docs, is in fact the supported way to trigger a Talos upgrade. The notes below reflect how
-this repository actually wires up `talos_machine`/`talos_machine_bootstrap` today and what to watch
-out for as a result.
+for the multi-year discussion on graceful, node-by-node upgrades. The notes below reflect how this
+repository wires up `talos_machine`/`talos_cluster` today and what to watch out for as a result.
 
 ### Upgrading Talos
-1. Pick the new Talos version and update `talos_version`, `talos_linux_iso_image_url` and
+1. Pick the new Talos version and update `talos_linux_iso_image_url` and
    `talos_linux_iso_image_filename` in `configuration.auto.tfvars`.
 2. For every node in `node_data`, update `install_image` to the matching version tag, e.g.
    `factory.talos.dev/nocloud-installer/<schematic-id>:v1.14.0`. The schematic ID stays the same
    across versions unless you change the extensions baked into the image on the
    [Talos Image Factory](https://factory.talos.dev/); only the version tag needs bumping.
-3. Run `tofu plan` to confirm only the `image` field (and any machine config drift) is changing, not
+   `install_image` alone drives the OS upgrade.
+3. Leave `talos_version` alone. It is the *machine configuration contract*, pinned to the version the
+   cluster was created with, and is independent of the installed Talos version — the provider's docs
+   make this [explicit](https://registry.terraform.io/providers/siderolabs/talos/latest/docs/data-sources/machine_configuration)
+   as of v0.12.0. Bumping it regenerates every node's machine configuration with the new contract's
+   schema and defaults, which is a separate, deliberate action, not part of a routine OS upgrade.
+   (Earlier revisions of this README advised bumping it alongside `install_image`, following
+   [#381](https://github.com/siderolabs/terraform-provider-talos/issues/381); v0.12.0 supersedes
+   that.)
+4. Run `tofu plan` to confirm only the `image` field (and any machine config drift) is changing, not
    disk layout or network settings.
-4. `node_data.controlplanes` and `node_data.workers` are each applied with `for_each` and have no
+5. `node_data.controlplanes` and `node_data.workers` are each applied with `for_each` and have no
    `depends_on` chaining between individual nodes, so a plain `tofu apply` upgrades every node in
    parallel. For a multi-control-plane cluster this risks losing etcd quorum. Run
    `tofu apply -parallelism=1` instead to upgrade nodes one at a time — see the provider's
    [Upgrading multiple nodes safely](https://registry.terraform.io/providers/siderolabs/talos/latest/docs/resources/machine#upgrading-multiple-nodes-safely)
    guidance.
-5. `drain_on_upgrade` is set to `false` for both control plane and worker `talos_machine` resources
-   in `talos_linux.tf`, so nodes reboot without being cordoned/drained first — acceptable for a
-   home-lab cluster that can tolerate brief pod disruption. If you want zero-disruption upgrades,
-   wire `kubeconfig_wo = talos_cluster_kubeconfig.this.kubeconfig_raw` into both resources and set
-   `drain_on_upgrade = true` (see the provider's
-   [Draining nodes before upgrade](https://registry.terraform.io/providers/siderolabs/talos/latest/docs/resources/machine#draining-nodes-before-upgrade)).
+6. `drain_on_upgrade` is `true` for both control plane and worker `talos_machine` resources, so each
+   node is cordoned and drained before it reboots and uncordoned afterwards. The kubeconfig needed
+   for that comes from the `ephemeral "talos_cluster_kubeconfig" "drain"` block, which derives it
+   offline from the machine secrets rather than reading it back from the Talos API — that is what
+   keeps it free of a dependency cycle with `talos_machine`, and being ephemeral it never lands in
+   state. Draining requires a healthy Kubernetes cluster, so keep the ISO version and `install_image`
+   in step (1)/(2) in sync: an upgrade that fires during the *initial* bring-up, before Kubernetes
+   exists, would fail on the drain.
 
 ### Upgrading Kubernetes
 1. Update `kubernetes_version` in `configuration.auto.tfvars`.
-2. This value feeds `data.talos_machine_configuration` for every node, changing the embedded
-   `kubelet`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler` and `kube-proxy` image
-   tags. Because this project doesn't use the newer `talos_cluster` resource or the
-   `ignore_kubernetes_upgrade_drift` attribute on `talos_machine`, `tofu apply` re-applies those tags
-   directly and in parallel across all nodes rather than following Talos's sequential, health-gated
-   `upgrade-k8s` procedure.
-3. For a small/home-lab cluster this is usually fine, but for a safer rollout run
-   `tofu apply -parallelism=1` for this step too, or upgrade manually with `talosctl upgrade-k8s`
-   first and only bump `kubernetes_version` afterwards, so `tofu plan` reports no drift on the next
-   apply.
+2. The value feeds both `talos_cluster` and `data.talos_machine_configuration`. `talos_cluster`
+   performs the actual rolling upgrade via `upgrade-k8s`; the data source only controls the image
+   tags baked into the generated configuration, which matter at bootstrap when a node is added
+   later, so the two must stay in sync — a single variable feeds both.
+3. Both `talos_machine` resources set `ignore_kubernetes_upgrade_drift = true`, so the five
+   Kubernetes component image fields owned by `upgrade-k8s` (`machine.kubelet.image`,
+   `cluster.apiServer.image`, `cluster.controllerManager.image`, `cluster.scheduler.image`,
+   `cluster.proxy.image`) are excluded from `talos_machine`'s drift detection. Without it,
+   `tofu apply` would re-apply those tags directly and in parallel across all nodes, bypassing
+   `upgrade-k8s`'s sequencing. Note that the attribute is flagged experimental by the provider: only
+   the version tag is stripped from the hash, so a registry change is still detected as drift.
+4. A plain `tofu apply` is safe here — `talos_cluster` does the sequencing and health gating itself,
+   so `-parallelism=1` is not needed for this step.
+
+### Migrating an existing cluster to the v0.12.0 resources
+If you are running an already bootstrapped cluster from an earlier revision of this repository, the
+switch from `talos_machine_bootstrap` to `talos_cluster` shows up in the plan as one destroy and one
+create. Both are safe against a live cluster: `talos_machine_bootstrap`'s destroy is a no-op that only
+drops the resource from state, and `talos_cluster`'s create treats an already bootstrapped etcd as
+success before running the Talos-layer health checks. Enabling `ignore_kubernetes_upgrade_drift` also
+changes how the machine configuration hash is computed, so expect a one-time in-place update of each
+`talos_machine` to refresh that hash. Run `tofu plan` first and confirm you see no `image` change and
+no resource *replacement* — a replacement of `talos_machine` would reset the node.
 
 ## Roadmap
 Proxmox part:
-* automate safe, node-by-node upgrade sequencing (draining, `-parallelism=1` equivalent via `depends_on`)
-  for Talos/Kubernetes version bumps, see [Upgrading](#upgrading)
+* automate safe, node-by-node Talos OS upgrade sequencing (a `-parallelism=1` equivalent via
+  `depends_on` chaining between nodes) for `install_image` bumps, see [Upgrading](#upgrading).
+  Draining and Kubernetes upgrade sequencing are already handled by `drain_on_upgrade` and
+  `talos_cluster` respectively.
 
 I am happy to receive pull requests for any improvements.
 
