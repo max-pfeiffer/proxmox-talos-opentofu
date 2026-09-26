@@ -1,5 +1,16 @@
 resource "talos_machine_secrets" "this" {}
 
+# Kubeconfig used solely to cordon/drain nodes during Talos OS upgrades. It is derived
+# offline from the machine secrets instead of being read back from the Talos API, so —
+# unlike talos_cluster_kubeconfig.this — it does not depend on the cluster being
+# bootstrapped and introduces no dependency cycle with talos_machine. Being an ephemeral
+# resource, the kubeconfig never lands in state.
+ephemeral "talos_cluster_kubeconfig" "drain" {
+  cluster_name    = var.cluster_name
+  machine_secrets = talos_machine_secrets.this.machine_secrets
+  endpoint        = "https://${var.cluster_vip_shared_ip}:6443"
+}
+
 data "talos_machine_configuration" "controlplane" {
   for_each           = var.node_data.controlplanes
   cluster_name       = var.cluster_name
@@ -75,10 +86,13 @@ resource "talos_machine" "controlplane" {
   client_configuration  = talos_machine_secrets.this.client_configuration
   machine_configuration = data.talos_machine_configuration.controlplane[each.key].machine_configuration
   image                 = each.value.install_image
-  # No Kubernetes cluster (and thus no kubeconfig) exists yet at initial bring-up, which
-  # talos_cluster_kubeconfig.this needs anyway (it depends on bootstrap, which depends on
-  # this resource) — so draining is not obtainable here without a dependency cycle.
-  drain_on_upgrade = false
+  drain_on_upgrade      = true
+  kubeconfig_wo         = ephemeral.talos_cluster_kubeconfig.drain.kubeconfig_raw
+
+  # Kubernetes component image tags are owned by talos_cluster, which upgrades them
+  # through Talos' sequential, health-gated upgrade-k8s procedure. Excluding them from
+  # drift detection keeps this resource from re-applying them in parallel and bypassing it.
+  ignore_kubernetes_upgrade_drift = true
 }
 
 resource "talos_machine" "worker" {
@@ -89,19 +103,28 @@ resource "talos_machine" "worker" {
   client_configuration  = talos_machine_secrets.this.client_configuration
   machine_configuration = data.talos_machine_configuration.worker[each.key].machine_configuration
   image                 = each.value.install_image
-  drain_on_upgrade      = false
+  drain_on_upgrade      = true
+  kubeconfig_wo         = ephemeral.talos_cluster_kubeconfig.drain.kubeconfig_raw
+
+  ignore_kubernetes_upgrade_drift = true
 }
 
-resource "talos_machine_bootstrap" "this" {
+# Bootstraps etcd and owns the Kubernetes version: changing kubernetes_version runs Talos'
+# upgrade-k8s procedure, which upgrades the control plane components and kubelets
+# sequentially with health gating. Bootstrapping is idempotent, so re-creating this
+# resource against an already running cluster is a no-op followed by a health check.
+resource "talos_cluster" "this" {
   depends_on = [talos_machine.controlplane]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = [for k, v in var.node_data.controlplanes : k][0]
+  node                 = keys(var.node_data.controlplanes)[0]
+  control_plane_nodes  = keys(var.node_data.controlplanes)
+  kubernetes_version   = var.kubernetes_version
 }
 
 resource "talos_cluster_kubeconfig" "this" {
-  depends_on           = [talos_machine_bootstrap.this]
+  depends_on           = [talos_cluster.this]
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = [for k, v in var.node_data.controlplanes : k][0]
+  node                 = keys(var.node_data.controlplanes)[0]
   endpoint             = var.cluster_vip_shared_ip
 }
