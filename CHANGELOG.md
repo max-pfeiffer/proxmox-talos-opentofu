@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.4.0...2.5.0) (2026-09-26)
+
+
+### Features
+
+* adopted v0.12.0 of Talos provider, made use of the new talos_cluster resource ([8202dc7](https://github.com/max-pfeiffer/proxmox-talos-opentofu/commit/8202dc7ba392c9707066442c0e98ad616e8d4f05))
+
 ## [2.4.0](https://github.com/max-pfeiffer/proxmox-talos-opentofu/compare/2.3.1...2.4.0) (2026-08-23)
 
 
